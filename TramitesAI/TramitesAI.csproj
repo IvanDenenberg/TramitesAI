@@ -7,8 +7,35 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="a\**" />
+    <Compile Remove="Orchestrator\**" />
+    <Content Remove="a\**" />
+    <Content Remove="Orchestrator\**" />
+    <EmbeddedResource Remove="a\**" />
+    <EmbeddedResource Remove="Orchestrator\**" />
+    <None Remove="a\**" />
+    <None Remove="Orchestrator\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="AI\Domain\Dto\" />
+    <Folder Include="AI\Domain\Enums\" />
+    <Folder Include="AI\Implementations\" />
+    <Folder Include="AI\Services\Infrastructure\" />
+    <Folder Include="AI\Services\Interfaces\" />
+    <Folder Include="AI\Services\" />
+    <Folder Include="Business\Configuration\" />
+    <Folder Include="Business\Domain\Dto\" />
+    <Folder Include="Business\Domain\Enums\" />
+    <Folder Include="Business\Services\Infrastructure\" />
+    <Folder Include="Business\Services\Interfaces\" />
+    <Folder Include="Business\Controllers\" />
+    <Folder Include="Business\Repository\" />
   </ItemGroup>
 
 </Project>
