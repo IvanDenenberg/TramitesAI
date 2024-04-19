@@ -23,12 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="AI\Domain\Dto\" />
     <Folder Include="AI\Domain\Enums\" />
     <Folder Include="AI\Services\Infrastructure\" />
-    <Folder Include="AI\Services\Interfaces\" />
     <Folder Include="Business\Services\Implementation\" />
-    <Folder Include="Business\Services\Interfaces\" />
     <Folder Include="Repository\Configuration\" />
     <Folder Include="Business\Domain\Dto\" />
     <Folder Include="Business\Domain\Enums\" />
