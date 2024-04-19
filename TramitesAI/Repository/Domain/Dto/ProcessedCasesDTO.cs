@@ -8,11 +8,11 @@ namespace TramitesAI.Repository.Domain.Dto
         public string MsgId { get; private set; }
         public string Channel { get; private set; }
         public string Email { get; private set; }
-        public int TypeId { get; private set; }
+        public string TypeId { get; set; }
         public RequestDTO Request { get; private set; }
-        public ResponseDTO Response { get; private set; }
+        public ResponseDTO Response { get;  set; }
         public DateTime CreatedAt { get; private set; }
-        public DateTime UpdatedAt { get; private set; }
+        public DateTime UpdatedAt { get;  set; }
 
         private ProcessedCasesDTO() { }
 
