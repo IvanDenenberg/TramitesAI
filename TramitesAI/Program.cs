@@ -18,15 +18,15 @@ app.MapControllers();
 // Main method to perform OCR
 static void PerformOCR()
 {
-    // Inicializar el motor de Tesseract
     try
     {
+        // Inicialización del motor de Tesseract
         using (var engine = new TesseractEngine(@"./tessdata", "spa", EngineMode.Default))
         {
             // OK: otros_ejemplos2.png - 12346-imagen00231.jpg - 12345-imagen00231.jpeg - 12345-foto1.jpg
             // Failed - otros_ejemplos1.pdf - 12347-imagen00231.docx
             string filePath = "./images/otros_ejemplos1.pdf";
-            //Seguro haya que cambiar esta lógica en base a cómo recibimos el archivo
+            // Evaluamos si es un archivo pdf. Seguro haya que cambiar esta lógica en base a cómo recibimos el archivo
             bool terminaEnPDF = filePath.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase); 
 
             if (terminaEnPDF)
@@ -35,18 +35,19 @@ static void PerformOCR()
             }
             else
             {
-                  using (var img = Pix.LoadFromFile(filePath)) // tamb me va a permitir probar con archivos de más de una página
+                  // Acceso al archivo
+                  using (var img = Pix.LoadFromFile(filePath)) 
                   {
-                        //Console.WriteLine("IMAGE", img);
                         using (var page = engine.Process(img))
                         {
                             var text = page.GetText();
-                            bool contieneLetras = text.Any(char.IsLetter); //Para verificar que no sea una imagen ilustrativa
+                            //Para verificar que no sea una imagen ilustrativa evaluamos que text no contenga texto
+                            bool contieneLetras = text.Any(char.IsLetter);
 
                             if (contieneLetras)
                             {
                                 Console.WriteLine("Mean confidence: {0}", page.GetMeanConfidence()); //CLIENTES: Ya desde este dato filtramos respuesta?
-                                Console.WriteLine("Text (GetText): {0}", text);
+                                Console.WriteLine("Text (GetText): {0}", text); // Obtenemos el texto estraido por el OCR
                             }
                             else
                             {
