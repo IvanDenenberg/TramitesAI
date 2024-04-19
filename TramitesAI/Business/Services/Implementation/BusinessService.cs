@@ -1,4 +1,6 @@
-﻿using TramitesAI.Business.Domain.Dto;
+﻿using TramitesAI.AI.Domain.Dto;
+using TramitesAI.AI.Services.Interfaces;
+using TramitesAI.Business.Domain.Dto;
 using TramitesAI.Business.Services.Interfaces;
 using TramitesAI.Repository.Domain.Dto;
 using TramitesAI.Repository.Interfaces;
@@ -9,11 +11,15 @@ namespace TramitesAI.Business.Services.Implementation
     {
         private IRepository<ProcessedCasesDTO> _processedCasesRepository;
         private IRepository<AssociatedFilesDTO> _associatedFilesRepository;
+        private IAIHandler _AIHandler;
+        private IFileSearcher _fileSearcher;
 
-        public BusinessService(IRepository<ProcessedCasesDTO> processedCasesRepository, IRepository<AssociatedFilesDTO> associatedFilesRepository)
+        public BusinessService(IRepository<ProcessedCasesDTO> processedCasesRepository, IRepository<AssociatedFilesDTO> associatedFilesRepository, IAIHandler aIHandler, IFileSearcher fileSearcher)
         {
             _processedCasesRepository = processedCasesRepository;
             _associatedFilesRepository = associatedFilesRepository;
+            _AIHandler = aIHandler;
+            _fileSearcher = fileSearcher;
         }
 
         public ResponseDTO GetById(string id)
@@ -21,51 +27,80 @@ namespace TramitesAI.Business.Services.Implementation
             throw new NotImplementedException();
         }
 
-        public ResponseDTO Process(RequestDTO requestDTO)
+        public async Task<ResponseDTO> ProcessAsync(RequestDTO requestDTO)
         {
             // Extract info from the request and save it in the database
-            SaveNewCase(requestDTO);
+            string id = await SaveNewCaseAsync(requestDTO);
 
-            // Extract info from attachments
+            // Get files from storage
+            List<FileStream> files = GetFilesFromRequest(requestDTO.Attachments);
+
+            // Get business rules and send the request with the extracted info
+            List<BusinessRulesDTO> rules = SearchBusinessRules();
 
             // Process Case
-            // Get business rules and send the request with the extracted info
+            // Extract info from attachments and analyze
+            AnalyzedInformationDTO analyzedInformation = _AIHandler.ProcessInfo(files, rules, requestDTO);
+
+            //Generate Response
+            ResponseDTO responseDTO = GenerateResponse(analyzedInformation);
+
 
             // Update with response
-            UpdateCase();
+            UpdateCase(responseDTO, id, "typeID");
             
 
             return new ResponseDTO();
         }
 
-        private void UpdateCase()
+        private List<BusinessRulesDTO> SearchBusinessRules()
         {
             throw new NotImplementedException();
         }
 
-        private void SaveNewCase(RequestDTO requestDTO)
+        private ResponseDTO GenerateResponse(AnalyzedInformationDTO analyzedInformation)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async void UpdateCase(ResponseDTO responseDTO, string id, string typeID)
+        {
+            ProcessedCasesDTO processedCasesDTO = await _processedCasesRepository.GetById(id);
+            {
+                //Add info that was not available before analysis
+                processedCasesDTO.Response = responseDTO;
+                processedCasesDTO.UpdatedAt = DateTime.Now;
+                processedCasesDTO.TypeId = typeID;
+            }
+
+            _ = _processedCasesRepository.Update(id, processedCasesDTO);
+        }
+
+        private List<FileStream> GetFilesFromRequest(List<string> attachments)
+        {
+            List<FileStream> files = new List<FileStream>();
+            foreach (string attachment in attachments)
+            {
+                //TODO Add full path
+                FileStream file = _fileSearcher.GetFile(attachment);
+                files.Add(file);
+            }
+
+            return files;
+        }
+
+
+        private async Task<string> SaveNewCaseAsync(RequestDTO requestDTO)
         {
             ProcessedCasesDTO processedCase = ProcessedCasesDTO.Builder()
-                    //Definir como se genera el id
-                    .Id("1")
                     .MsgId(requestDTO.MsgId)
                     .Channel(requestDTO.Channel)
                     .Email(requestDTO.Email)
                     .Request(requestDTO)
                     .CreatedAt(requestDTO.ReceivedDate)
                     .Build();
-
-            _processedCasesRepository.Create(processedCase);
-
-            foreach (var attachment in requestDTO.Attachments)
-            {
-                AssociatedFilesDTO associatedFilesDTO = AssociatedFilesDTO.Builder()
-                    .Id("1")
-                    .MsgId(requestDTO.MsgId)
-                    .Build();
-
-                _associatedFilesRepository.Create(associatedFilesDTO);
-            }
+             
+            return await _processedCasesRepository.Create(processedCase);
         }
     }
 }
