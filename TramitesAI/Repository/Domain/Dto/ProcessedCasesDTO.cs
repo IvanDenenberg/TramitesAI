@@ -43,6 +43,25 @@ namespace TramitesAI.Repository.Domain.Dto
                 return this;
             }
 
+            public ProcessedCasesDTOBuilder Email(string email)
+            {
+                dto.Email = email;
+                return this;
+            }
+
+            public ProcessedCasesDTOBuilder Request(RequestDTO request)
+            {
+                dto.Request = request;
+                return this;
+            }
+
+            public ProcessedCasesDTOBuilder CreatedAt(DateTime date)
+            {
+                dto.CreatedAt = date;
+                return this;
+            }
+
+
             public ProcessedCasesDTO Build()
             {
                 return dto;
