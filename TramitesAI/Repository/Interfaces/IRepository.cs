@@ -7,7 +7,7 @@
     {
         Task<IEnumerable<TEntity>> GetAll();
         Task<TEntity> GetById(string id);
-        Task Create(TEntity entity);
+        Task<string> Create(TEntity entity);
         Task Update(string id, TEntity entity);
         Task Delete(string id);
     }
