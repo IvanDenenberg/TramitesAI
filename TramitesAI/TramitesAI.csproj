@@ -18,8 +18,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="libpng-msvc-x64" Version="1.6.33.8807" />
+    <PackageReference Include="libpng-v142" Version="1.6.37.2" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.4" />
+    <PackageReference Include="Tesseract" Version="5.2.0" />
   </ItemGroup>
 
   <ItemGroup>
