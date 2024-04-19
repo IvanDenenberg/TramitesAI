@@ -9,6 +9,7 @@
       "TramitesAI/1.0.0": {
         "dependencies": {
           "Microsoft.AspNetCore.OpenApi": "7.0.4",
+          "Pdf.Ocr": "4.4.4.1",
           "Swashbuckle.AspNetCore": "6.4.0",
           "System.Drawing.Common": "8.0.4",
           "Tesseract": "5.2.0",
@@ -17,6 +18,22 @@
         },
         "runtime": {
           "TramitesAI.dll": {}
+        }
+      },
+      "IronOcr/4.4.0": {
+        "runtime": {
+          "lib/net40/IronOcr.dll": {
+            "assemblyVersion": "4.4.0.21181",
+            "fileVersion": "4.4.0.0"
+          }
+        }
+      },
+      "IronPdf/4.4.9": {
+        "runtime": {
+          "lib/net40/IronPdf.dll": {
+            "assemblyVersion": "4.4.9.15720",
+            "fileVersion": "4.4.9.0"
+          }
         }
       },
       "libpng-msvc-x64/1.6.33.8807": {},
@@ -54,6 +71,18 @@
             "assetType": "runtime",
             "assemblyVersion": "8.0.0.0",
             "fileVersion": "8.0.23.53103"
+          }
+        }
+      },
+      "Pdf.Ocr/4.4.4.1": {
+        "dependencies": {
+          "IronOcr": "4.4.0",
+          "IronPdf": "4.4.9"
+        },
+        "runtime": {
+          "lib/net40/IronSoftware.Pdf.Complete.dll": {
+            "assemblyVersion": "4.4.2.19756",
+            "fileVersion": "4.4.2.6"
           }
         }
       },
@@ -126,6 +155,20 @@
       "serviceable": false,
       "sha512": ""
     },
+    "IronOcr/4.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-tOZdFo40tnmsHIEnKa0jcEAcvBPpgSexob3dLJt1Yqrvk5VZCcXRO8xto/bXB1Lj+Rkjm5zxLycU8zgruxEnsg==",
+      "path": "ironocr/4.4.0",
+      "hashPath": "ironocr.4.4.0.nupkg.sha512"
+    },
+    "IronPdf/4.4.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3stJxczufRRagDI3bvFUzBSx8wvNDq0NDWdMpqqFhvFC3c0xWKHjNMweCwCcJFkZsAx9ZDKl9XL14i9eRmTMdA==",
+      "path": "ironpdf/4.4.9",
+      "hashPath": "ironpdf.4.4.9.nupkg.sha512"
+    },
     "libpng-msvc-x64/1.6.33.8807": {
       "type": "package",
       "serviceable": true,
@@ -167,6 +210,13 @@
       "sha512": "sha512-9opKRyOKMCi2xJ7Bj7kxtZ1r9vbzosMvRrdEhVhDz8j8MoBGgB+WmC94yH839NPH+BclAjtQ/pyagvi/8gDLkw==",
       "path": "microsoft.win32.systemevents/8.0.0",
       "hashPath": "microsoft.win32.systemevents.8.0.0.nupkg.sha512"
+    },
+    "Pdf.Ocr/4.4.4.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-8FyEbxppUinhKMlmfxBAzAN0ANd8Rpq9h+0rrQzBf4RwqXgHZqmdXhWorB4RjO6u9IlGuTj8Z6noAWHU650epg==",
+      "path": "pdf.ocr/4.4.4.1",
+      "hashPath": "pdf.ocr.4.4.4.1.nupkg.sha512"
     },
     "Swashbuckle.AspNetCore/6.4.0": {
       "type": "package",
