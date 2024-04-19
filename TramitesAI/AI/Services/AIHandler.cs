@@ -1,6 +1,6 @@
 ﻿namespace TramitesAI.AI.Services
 {
-    public class AIHandlerService
+    public class AIHandler : IAIHandler
     {
     }
 }

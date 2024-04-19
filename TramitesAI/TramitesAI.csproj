@@ -27,15 +27,12 @@
     <Folder Include="AI\Domain\Enums\" />
     <Folder Include="AI\Services\Infrastructure\" />
     <Folder Include="AI\Services\Interfaces\" />
-    <Folder Include="AI\Services\Implementation\" />
     <Folder Include="Business\Services\Implementation\" />
     <Folder Include="Business\Services\Interfaces\" />
-    <Folder Include="Controllers\" />
     <Folder Include="Repository\Configuration\" />
     <Folder Include="Business\Domain\Dto\" />
     <Folder Include="Business\Domain\Enums\" />
     <Folder Include="Business\Services\Infrastructure\" />
-    <Folder Include="Repository\" />
   </ItemGroup>
 
 </Project>
