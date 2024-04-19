@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    public interface IRepositoryService<TEntity>
+    public interface IRepository<TEntity>
     {
         Task<IEnumerable<TEntity>> GetAll();
         Task<TEntity> GetById(string id);
