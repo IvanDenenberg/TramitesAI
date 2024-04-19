@@ -17,9 +17,9 @@ namespace TramitesAI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Process([FromBody] RequestDTO request)
+        public async Task<IActionResult> ProcessAsync([FromBody] RequestDTO request)
         {
-            ResponseDTO response = _businessService.Process(request);
+            ResponseDTO response = await _businessService.ProcessAsync(request);
             //TODO Change return
             return Ok(response);
         }

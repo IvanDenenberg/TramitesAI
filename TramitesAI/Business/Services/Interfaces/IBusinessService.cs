@@ -4,7 +4,7 @@ namespace TramitesAI.Business.Services.Interfaces
 {
     public interface IBusinessService
     {
-        public ResponseDTO Process(RequestDTO requestDTO);
+        public Task<ResponseDTO> ProcessAsync(RequestDTO requestDTO);
         public ResponseDTO GetById(string id);
     }
 }
