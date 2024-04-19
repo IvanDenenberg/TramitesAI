@@ -3,9 +3,9 @@ using TramitesAI.Repository.Interfaces;
 
 namespace TramitesAI.Repository.Implementations
 {
-    public class ProcessedCasesRepository : IRepository<ProcessedCasesDTO>
+    public class BusinessRulesRepository : IRepository<BusinessRulesDTO>
     {
-        public Task<string> Create(ProcessedCasesDTO entity)
+        public Task<string> Create(BusinessRulesDTO entity)
         {
             throw new NotImplementedException();
         }
@@ -15,17 +15,17 @@ namespace TramitesAI.Repository.Implementations
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<ProcessedCasesDTO>> GetAll()
+        public Task<IEnumerable<BusinessRulesDTO>> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public Task<ProcessedCasesDTO> GetById(string id)
+        public Task<BusinessRulesDTO> GetById(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task Update(string id, ProcessedCasesDTO entity)
+        public Task Update(string id, BusinessRulesDTO entity)
         {
             throw new NotImplementedException();
         }
