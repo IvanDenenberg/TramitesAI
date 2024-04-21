@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Freeware.Pdf2Png" Version="1.0.1" />
     <PackageReference Include="libpng-msvc-x64" Version="1.6.33.8807" />
     <PackageReference Include="libpng-v142" Version="1.6.37.2" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.4" />
@@ -36,6 +37,7 @@
     <Folder Include="Business\Services\Implementation\" />
     <Folder Include="Business\Services\Interfaces\" />
     <Folder Include="Controllers\" />
+    <Folder Include="images\PdfsToPng\" />
     <Folder Include="Repository\Configuration\" />
     <Folder Include="Business\Domain\Dto\" />
     <Folder Include="Business\Domain\Enums\" />

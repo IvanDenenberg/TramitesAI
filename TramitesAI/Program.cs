@@ -1,6 +1,4 @@
 using Tesseract;
-using IronPdf;
-using IronOcr;
 
 
 
@@ -25,38 +23,47 @@ static void PerformOCR()
         {
             // OK: otros_ejemplos2.png - 12346-imagen00231.jpg - 12345-imagen00231.jpeg - 12345-foto1.jpg
             // Failed - otros_ejemplos1.pdf - 12347-imagen00231.docx
-            string filePath = "./images/otros_ejemplos1.pdf";
+            string filePath = "./images/12347-presupuesto3.pdf";
             // Evaluamos si es un archivo pdf. Seguro haya que cambiar esta lógica en base a cómo recibimos el archivo
-            bool terminaEnPDF = filePath.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase); 
+            bool terminaEnPDF = filePath.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
 
             if (terminaEnPDF)
             {
                 Console.WriteLine("El archivo termina en .pdf");
+                string pdfFileNameWithoutWxtension = System.IO.Path.GetFileNameWithoutExtension(filePath);
+                byte[] pdfFileAsByte = System.IO.File.ReadAllBytes(filePath);
+                List<byte[]> pngFilesAsBytes = Freeware.Pdf2Png.ConvertAllPages(pdfFileAsByte);
+                int pageCounter = 0;
+                foreach (byte[] onePngAsBytes in pngFilesAsBytes)
+                {
+                    pageCounter++;
+                    System.IO.File.WriteAllBytes(System.IO.Path.Combine(@"./images/PdfsToPng/", pdfFileNameWithoutWxtension + "_" + pageCounter + ".png"), onePngAsBytes);
+                }
             }
             else
             {
-                  // Acceso al archivo
-                  using (var img = Pix.LoadFromFile(filePath)) 
-                  {
-                        using (var page = engine.Process(img))
+                // Acceso al archivo
+                using (var img = Pix.LoadFromFile(filePath))
+                {
+                    using (var page = engine.Process(img))
+                    {
+                        var text = page.GetText();
+                        //Para verificar que no sea una imagen ilustrativa evaluamos que text no contenga texto
+                        bool contieneLetras = text.Any(char.IsLetter);
+
+                        if (contieneLetras)
                         {
-                            var text = page.GetText();
-                            //Para verificar que no sea una imagen ilustrativa evaluamos que text no contenga texto
-                            bool contieneLetras = text.Any(char.IsLetter);
-
-                            if (contieneLetras)
-                            {
-                                Console.WriteLine("Mean confidence: {0}", page.GetMeanConfidence()); //CLIENTES: Ya desde este dato filtramos respuesta?
-                                Console.WriteLine("Text (GetText): {0}", text); // Obtenemos el texto estraido por el OCR
-                            }
-                            else
-                            {
-                                Console.WriteLine("Imagen ilustrativa");
-                            }
-
-                            //Console.WriteLine("Text (iterator):");
+                            Console.WriteLine("Mean confidence: {0}", page.GetMeanConfidence()); //CLIENTES: Ya desde este dato filtramos respuesta?
+                            Console.WriteLine("Text (GetText): {0}", text); // Obtenemos el texto estraido por el OCR
                         }
-                  }
+                        else
+                        {
+                            Console.WriteLine("Imagen ilustrativa");
+                        }
+
+                        //Console.WriteLine("Text (iterator):");
+                    }
+                }
             }
         }
     }
