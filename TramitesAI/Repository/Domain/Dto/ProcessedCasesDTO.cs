@@ -62,6 +62,12 @@ namespace TramitesAI.Repository.Domain.Dto
             }
 
 
+            public ProcessedCasesDTOBuilder TypeId(string type)
+            {
+                dto.TypeId = type;
+                return this;
+            }
+
             public ProcessedCasesDTO Build()
             {
                 return dto;
