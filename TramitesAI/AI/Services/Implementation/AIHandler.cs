@@ -1,15 +1,32 @@
 ﻿using TramitesAI.AI.Domain.Dto;
 using TramitesAI.AI.Services.Interfaces;
 using TramitesAI.Business.Domain.Dto;
-using TramitesAI.Repository.Domain.Dto;
 
 namespace TramitesAI.AI.Services.Implementation
 {
     public class AIHandler : IAIHandler
     {
-        public AnalyzedInformationDTO ProcessInfo(List<FileStream> files, List<BusinessRulesDTO> rules, RequestDTO requestDTO)
+        private IAIAnalyzer _iAIAnalyzer;
+        private IAIInformationExtractor _iAIInformationExtractor;
+
+        public AIHandler(IAIAnalyzer iAIAnalyzer, IAIInformationExtractor iAIInformationExtractor)
         {
-            throw new NotImplementedException();
+            _iAIAnalyzer = iAIAnalyzer;
+            _iAIInformationExtractor = iAIInformationExtractor;
+        }
+
+        public string DetermineType(RequestDTO requestDTO)
+        {
+            return _iAIAnalyzer.determineType(requestDTO);
+        }
+
+        public AnalyzedInformationDTO ProcessInfo(List<FileStream> files, RequestDTO requestDTO)
+        {
+            // Extract info from files
+            ExtractedInfoDTO infoFromFiles = _iAIInformationExtractor.extractInfoFromFiles(files);
+
+            // Analyze information
+             return _iAIAnalyzer.analyzeInformation(infoFromFiles, requestDTO);
         }
     }
 }
