@@ -5,3 +5,5 @@ obj
 *.userosscache
 *.sln.docstates
 packages/
+Debug/
+TramitesAI/bin/
