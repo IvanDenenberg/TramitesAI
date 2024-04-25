@@ -9,6 +9,7 @@ namespace TramitesAI.Controllers
         [HttpGet]
         public IActionResult Ping() 
         {
+            Console.WriteLine("Pong");
             return Ok("Pong");
         }
     }
