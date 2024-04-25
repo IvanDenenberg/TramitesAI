@@ -15,7 +15,7 @@ namespace TramitesAI.AI.Services.Implementation
                 {
                     // OK: otros_ejemplos2.png - 12346-imagen00231.jpg - 12345-imagen00231.jpeg - 12345-foto1.jpg
                     // Failed - otros_ejemplos1.pdf - 12347-imagen00231.docx
-                    string filePath = "./images/12347-presupuesto3.pdf";
+                    string filePath = "./images/12346-imagen00231.jpg";
                     // Evaluamos si es un archivo pdf. Seguro haya que cambiar esta lógica en base a cómo recibimos el archivo
                     bool terminaEnPDF = filePath.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
 

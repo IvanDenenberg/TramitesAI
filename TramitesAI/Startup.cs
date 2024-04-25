@@ -1,4 +1,6 @@
-﻿using TramitesAI.Business.Services.Implementation;
+﻿using TramitesAI.AI.Services.Implementation;
+using TramitesAI.AI.Services.Interfaces;
+using TramitesAI.Business.Services.Implementation;
 using TramitesAI.Business.Services.Interfaces;
 
 namespace TramitesAI
@@ -10,6 +12,8 @@ namespace TramitesAI
         {
             // Configure services here
             services.AddScoped<IBusinessService, BusinessService>();
+            services.AddScoped<IAIHandler, AIHandler>();
+            services.AddScoped<IAIInformationExtractor, TesseractService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
