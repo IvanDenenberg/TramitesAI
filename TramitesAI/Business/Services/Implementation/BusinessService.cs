@@ -2,6 +2,7 @@
 using TramitesAI.AI.Services.Interfaces;
 using TramitesAI.Business.Domain.Dto;
 using TramitesAI.Business.Services.Interfaces;
+using TramitesAI.Common.Exceptions;
 using TramitesAI.Repository.Domain.Dto;
 using TramitesAI.Repository.Interfaces;
 
@@ -29,38 +30,45 @@ namespace TramitesAI.Business.Services.Implementation
 
         public async Task<ResponseDTO> ProcessAsync(RequestDTO requestDTO)
         {
-            // Extract info from the request and save it in the database
-            string id = await SaveNewCaseAsync(requestDTO);
+            try
+            {
+                // Determine the type and validity
+                string type = DetermineType(requestDTO);
 
-            // Get files from storage
-            List<FileStream> files = GetFilesFromRequest(requestDTO.Attachments);
+                // Extract info from the request and save it in the database
+                string id = await SaveNewCaseAsync(requestDTO, type);
 
-            // Get business rules and send the request with the extracted info
-            List<BusinessRulesDTO> rules = SearchBusinessRules();
+                // Get files from external storage
+                List<FileStream> files = GetFilesFromRequest(requestDTO.Attachments);
 
-            // Process Case
-            // Extract info from attachments and analyze
-            AnalyzedInformationDTO analyzedInformation = _AIHandler.ProcessInfo(files, rules, requestDTO);
+                // Process Case
+                // Extract info from attachments and analyze
+                AnalyzedInformationDTO analyzedInformation = _AIHandler.ProcessInfo(files, requestDTO);
 
-            //Generate Response
-            ResponseDTO responseDTO = GenerateResponse(analyzedInformation);
+                //Generate Response
+                ResponseDTO responseDTO = GenerateResponse(analyzedInformation);
 
+                // Update with response
+                UpdateCase(responseDTO, id, type);
 
-            // Update with response
-            UpdateCase(responseDTO, id, "typeID");
-            
-
-            return new ResponseDTO();
+                return new ResponseDTO();
+            }
+            catch (Exception)
+            {
+                throw; 
+            }
         }
 
-        private List<BusinessRulesDTO> SearchBusinessRules()
+        private string DetermineType(RequestDTO requestDTO)
         {
-            throw new NotImplementedException();
+            // Return id_tramite
+            return _AIHandler.DetermineType(requestDTO);
+          
         }
 
         private ResponseDTO GenerateResponse(AnalyzedInformationDTO analyzedInformation)
         {
-            throw new NotImplementedException();
+            throw new ApiException(ErrorCode.UNKNOWN_ERROR);
         }
 
         private async void UpdateCase(ResponseDTO responseDTO, string id, string typeID)
@@ -89,8 +97,7 @@ namespace TramitesAI.Business.Services.Implementation
             return files;
         }
 
-
-        private async Task<string> SaveNewCaseAsync(RequestDTO requestDTO)
+        private async Task<string> SaveNewCaseAsync(RequestDTO requestDTO, string type)
         {
             ProcessedCasesDTO processedCase = ProcessedCasesDTO.Builder()
                     .MsgId(requestDTO.MsgId)
@@ -98,6 +105,7 @@ namespace TramitesAI.Business.Services.Implementation
                     .Email(requestDTO.Email)
                     .Request(requestDTO)
                     .CreatedAt(requestDTO.ReceivedDate)
+                    .TypeId(type)
                     .Build();
              
             return await _processedCasesRepository.Create(processedCase);
