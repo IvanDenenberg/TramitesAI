@@ -84,17 +84,23 @@ namespace TramitesAI.Business.Services.Implementation
             _ = _processedCasesRepository.Update(id, processedCasesDTO);
         }
 
-        private List<FileStream> GetFilesFromRequest(List<string> attachments)
+        private List<FileStream> GetFilesFromRequest(List<string> attachmentsURLs)
         {
-            List<FileStream> files = new List<FileStream>();
-            foreach (string attachment in attachments)
+            try
             {
-                //TODO Add full path
-                FileStream file = _fileSearcher.GetFile(attachment);
-                files.Add(file);
-            }
+                List<FileStream> files = new();
+                foreach (string attachmentURL in attachmentsURLs)
+                {
+                    FileStream file = _fileSearcher.GetFile(attachmentURL);
+                    files.Add(file);
+                }
 
-            return files;
+                return files;
+            }
+            catch (ApiException)
+            {
+                throw;
+            }
         }
 
         private async Task<string> SaveNewCaseAsync(RequestDTO requestDTO, string type)
