@@ -25,7 +25,6 @@
   <ItemGroup>
     <Folder Include="AI\Domain\Enums\" />
     <Folder Include="AI\Services\Infrastructure\" />
-    <Folder Include="Business\Services\Implementation\" />
     <Folder Include="Repository\Configuration\" />
     <Folder Include="Business\Domain\Enums\" />
     <Folder Include="Business\Services\Infrastructure\" />
