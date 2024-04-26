@@ -11,14 +11,12 @@ namespace TramitesAI.Business.Services.Implementation
     public class BusinessService : IBusinessService
     {
         private IRepository<ProcessedCasesDTO> _processedCasesRepository;
-        private IRepository<AssociatedFilesDTO> _associatedFilesRepository;
         private IAIHandler _AIHandler;
         private IFileSearcher _fileSearcher;
 
-        public BusinessService(IRepository<ProcessedCasesDTO> processedCasesRepository, IRepository<AssociatedFilesDTO> associatedFilesRepository, IAIHandler aIHandler, IFileSearcher fileSearcher)
+        public BusinessService(IRepository<ProcessedCasesDTO> processedCasesRepository, IAIHandler aIHandler, IFileSearcher fileSearcher)
         {
             _processedCasesRepository = processedCasesRepository;
-            _associatedFilesRepository = associatedFilesRepository;
             _AIHandler = aIHandler;
             _fileSearcher = fileSearcher;
         }
