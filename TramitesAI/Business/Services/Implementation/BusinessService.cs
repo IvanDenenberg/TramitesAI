@@ -38,7 +38,7 @@ namespace TramitesAI.Business.Services.Implementation
 
                 // Get files from external storage
                 //List<FileStream> files = GetFilesFromRequest(requestDTO.Attachments);
-                List<FileStream> files = new();
+                List<Stream> files = new();
                 // Process Case
                 // Extract info from attachments and analyze
                 AnalyzedInformationDTO analyzedInformation = _AIHandler.ProcessInfo(files, requestDTO);
