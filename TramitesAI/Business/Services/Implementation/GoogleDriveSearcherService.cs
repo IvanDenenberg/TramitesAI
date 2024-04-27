@@ -5,7 +5,7 @@ namespace TramitesAI.Business.Services.Implementation
 {
     public class GoogleDriveSearcherService : IFileSearcher
     {
-        public FileStream GetFile(string path)
+        public Stream GetFile(string path)
         {
             // Initialize HttpClient
             using var httpClient = new HttpClient();
@@ -15,8 +15,13 @@ namespace TramitesAI.Business.Services.Implementation
                 HttpResponseMessage response = httpClient.GetAsync(path).Result;
                 response.EnsureSuccessStatusCode();
 
-                using FileStream files = (FileStream) response.Content.ReadAsStreamAsync().Result;
-                
+                using Stream files = response.Content.ReadAsStreamAsync().Result;
+
+                using (FileStream fileStream = File.Create("C:/Users/ivand/Downloads/ORT Proyectos 2024/Archivos de prueba/prueba1.txt"))
+                {
+                    files.CopyTo(fileStream);
+                }
+
                 return files;
             }
             catch (HttpRequestException ex)
