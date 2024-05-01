@@ -37,7 +37,7 @@ namespace TramitesAI.Business.Services.Implementation
                 string id = await SaveNewCaseAsync(requestDTO, type);
 
                 // Get files from external storage
-                List<FileStream> files = GetFilesFromRequest(requestDTO.Attachments);
+                List<Stream> files = GetFilesFromRequest(requestDTO.Attachments, requestDTO.MsgId);
 
                 // Process Case
                 // Extract info from attachments and analyze
@@ -61,7 +61,6 @@ namespace TramitesAI.Business.Services.Implementation
         {
             // Return id_tramite
             return _AIHandler.DetermineType(requestDTO);
-          
         }
 
         private ResponseDTO GenerateResponse(AnalyzedInformationDTO analyzedInformation)
@@ -82,14 +81,14 @@ namespace TramitesAI.Business.Services.Implementation
             _ = _processedCasesRepository.Update(id, processedCasesDTO);
         }
 
-        private List<FileStream> GetFilesFromRequest(List<string> attachmentsURLs)
+        private List<Stream> GetFilesFromRequest(List<string> attachments, string msgId)
         {
             try
             {
-                List<FileStream> files = new();
-                foreach (string attachmentURL in attachmentsURLs)
+                List<Stream> files = new();
+                foreach (string attachment in attachments)
                 {
-                    FileStream file = _fileSearcher.GetFile(attachmentURL);
+                    Stream file = _fileSearcher.GetFile(attachment, msgId);
                     files.Add(file);
                 }
 
