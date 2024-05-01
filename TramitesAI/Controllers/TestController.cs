@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.IO;
+using System.Net;
+using System.Text;
+using TramitesAI.AI.Services.Implementation;
 using TramitesAI.Business.Domain.Dto;
 using TramitesAI.Business.Services.Interfaces;
+using TramitesAI.Common.Exceptions;
 
 namespace TramitesAI.Controllers
 {
@@ -18,11 +22,23 @@ namespace TramitesAI.Controllers
 
         //Endpoint to test GoogleDriveSearcherService
         [HttpGet("download-file-from-url")]
-        public IActionResult DownloadFileFromURL([FromRoute] string url) 
+        public IActionResult DownloadFileFromURL([FromQuery] string fileName, string msgId)
         {
-            FileStream file = _fileSearcher.GetFile(url);
+            if (fileName == null || msgId == null)
+            {
+                return BadRequest("Not all query params sended");
+            }
+            string content = "Default text";
+            MemoryStream file = _fileSearcher.GetFile(fileName, msgId);
 
-            return Ok(file.Name);
+            if (file.CanRead)
+            {
+                file.Seek(0, SeekOrigin.Begin); // Movemos el puntero al principio del stream
+                StreamReader reader = new StreamReader(file);
+                content = reader.ReadToEnd();
+            }
+
+            return Ok(value: content);
         }
     }
 }
