@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using Tesseract;
 using TramitesAI.AI.Domain.Dto;
 using TramitesAI.AI.Services.Interfaces;
@@ -11,17 +12,17 @@ namespace TramitesAI.AI.Services.Implementation
         {
             List < ExtractedInfoDTO > extractedInfoList = new List < ExtractedInfoDTO >();
 
-            foreach (FileStream file in files)
-            {
-                ExtractedInfoDTO extractedInfo = extractInfoFromFile(file);
-                extractedInfoList.Add(extractedInfo);
-            }
+            //foreach (FileStream file in files)
+            //{
+            //    ExtractedInfoDTO extractedInfo = extractInfoFromFile(file);
+            //    extractedInfoList.Add(extractedInfo);
+            //}
 
             return extractedInfoList;
 
         }
 
-        private ExtractedInfoDTO extractInfoFromFile(Stream file)
+        private ExtractedInfoDTO extractInfoFromFile(MemoryStream file)
         {
             try
             {
@@ -29,35 +30,37 @@ namespace TramitesAI.AI.Services.Implementation
                 using (var engine = new TesseractEngine(@"./tessdata", "spa", EngineMode.Default))
                 {
                     // Verificar si el archivo es un PDF (por ejemplo, mediante la extensión del nombre de archivo)
-                    bool esPDF = file is FileStream && ((FileStream)file).Name.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
+                    //bool esPDF = file is FileStream && ((FileStream)file).Name.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
 
-                    List<string> pngFilePaths = new List<string>();
+                    //List<string> pngFilePaths = new List<string>();
 
-                    if (esPDF)
-                    {
-                        // Convertir el PDF a PNG y obtener las rutas de archivo de las imágenes PNG generadas
-                        //pngFilePaths = ConvertirPDFAPNG(file, engine);
-                        ConvertirPDFAPNG(file, engine, pngFilePaths);
+                    //if (false)
+                    //{
+                    //    // Convertir el PDF a PNG y obtener las rutas de archivo de las imágenes PNG generadas
+                    //    //pngFilePaths = ConvertirPDFAPNG(file, engine);
+                    //    ConvertirPDFAPNG(file, engine, pngFilePaths);
 
-                    }
-                    else
-                    {
-                        string tempFilePath = Path.GetTempFileName();
-                        using (var tempFileStream = File.OpenWrite(tempFilePath))
-                        {
-                            file.CopyTo(tempFileStream);
-                        }
-                        pngFilePaths.Add(tempFilePath);
-                    }
+                    //}
+                    //else
+                    //{
+                    //    string tempFilePath = Path.GetTempFileName();
+                    //    using (var tempFileStream = File.OpenWrite(tempFilePath))
+                    //    {
+                    //        file.CopyTo(tempFileStream);
+                    //    }
+                    //    pngFilePaths.Add(tempFilePath);
+                    //}
 
-                    // Iterar sobre las rutas de archivo de las imágenes PNG generadas o del Stream original
-                    int i = 1;
-                    foreach (var pngFilePath in pngFilePaths)
-                    {
-                        ProcesarArchivo(pngFilePath, engine);
-                        Console.WriteLine("Página " + i);
-                        i++;
-                    }
+                    //// Iterar sobre las rutas de archivo de las imágenes PNG generadas o del Stream original
+                    //int i = 1;
+                    //foreach (var pngFilePath in pngFilePaths)
+                    //{
+                    //    ProcesarArchivo(pngFilePath, engine);
+                    //    Console.WriteLine("Página " + i);
+                    //    i++;
+                    //}
+                    ProcesarArchivo(file, engine);
+
                 }
             }
             catch (Exception ex)
@@ -114,9 +117,10 @@ namespace TramitesAI.AI.Services.Implementation
         }
 
 
-        static void ProcesarArchivo(string filePath, TesseractEngine engine)
+        static void ProcesarArchivo(MemoryStream file, TesseractEngine engine)
         {
-            byte[] imageData = File.ReadAllBytes(filePath);
+            //byte[] imageData = File.ReadAllBytes(file);
+            byte[] imageData = file.ToArray();
 
             using (var img = Pix.LoadFromMemory(imageData))
             {
