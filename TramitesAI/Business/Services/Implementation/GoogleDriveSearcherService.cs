@@ -16,11 +16,8 @@ namespace TramitesAI.Business.Services.Implementation
             try
             {
                 // Get JsonApiKey for Google Drive and its validation
+                string jsonApiKey = @"./Credentials/tramitesai-366f1be7dfc8.json";
 
-                // TODO Should use an environment variable
-                // string jsonApiKey = Environment.GetEnvironmentVariable("JSON_API_KEY");
-                string jsonApiKey = @"C:\Users\ivand\Downloads\ORT Proyectos 2024\tramitesai-366f1be7dfc8.json";
-               
                 if (jsonApiKey == null)
                 {
                     throw new ApiException(ErrorCode.MISSING_CONFIG_PROPERTY);
