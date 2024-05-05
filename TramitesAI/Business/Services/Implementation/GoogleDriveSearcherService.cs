@@ -22,6 +22,7 @@ namespace TramitesAI.Business.Services.Implementation
                 {
                     throw new ApiException(ErrorCode.MISSING_CONFIG_PROPERTY);
                 }
+                Console.WriteLine("Api key found");
 
                 // Connecting to Google Drive
                 GoogleCredential credential = GoogleCredential.FromFile(jsonApiKey)
@@ -31,6 +32,8 @@ namespace TramitesAI.Business.Services.Implementation
                 {
                     HttpClientInitializer = credential
                 });
+
+                Console.WriteLine("Connected to google drive");
 
                 // Defining target file name
                 String targetFileName = $"{msgId}_{fileName}";
@@ -45,9 +48,11 @@ namespace TramitesAI.Business.Services.Implementation
 
                 if (targetFile != null)
                 {
+                    Console.WriteLine("File found");
                     var request = service.Files.Get(targetFile.Id);
                     request.Download(stream);
                     stream.Position = 0;
+                    Console.WriteLine("File downloaded");
                 } else
                 {
                     throw new ApiException(ErrorCode.FILE_NOT_FOUND);
