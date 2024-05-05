@@ -33,7 +33,6 @@
     <Folder Include="AI\Services\Infrastructure\" />
     <Folder Include="Business\Services\Implementation\" />
     <Folder Include="Business\Services\Interfaces\" />
-    <Folder Include="Controllers\" />
     <Folder Include="images\PdfsToPng\" />
     <Folder Include="Repository\Configuration\" />
     <Folder Include="Business\Domain\Enums\" />

@@ -1,144 +1,135 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Tesseract;
 using TramitesAI.AI.Domain.Dto;
 using TramitesAI.AI.Services.Interfaces;
+using TramitesAI.Common.Exceptions;
 
 namespace TramitesAI.AI.Services.Implementation
 {
     public class TesseractService : IAIInformationExtractor
     {
-        public List<ExtractedInfoDTO> extractInfoFromFiles(List<Stream> files)
+        public List<ExtractedInfoDTO> extractInfoFromFiles(List<MemoryStream> files)
         {
-            List < ExtractedInfoDTO > extractedInfoList = new List < ExtractedInfoDTO >();
+            List<ExtractedInfoDTO> list = new List<ExtractedInfoDTO>();
 
-            //foreach (FileStream file in files)
-            //{
-            //    ExtractedInfoDTO extractedInfo = extractInfoFromFile(file);
-            //    extractedInfoList.Add(extractedInfo);
-            //}
-
-            return extractedInfoList;
+            foreach (MemoryStream file in files)
+            {
+                ExtractedInfoDTO extractedInfo = extractInfoFromFile(file);
+                list.Add(extractedInfo);
+            }
+            return list;
 
         }
 
-        private ExtractedInfoDTO extractInfoFromFile(MemoryStream file)
+        public ExtractedInfoDTO extractInfoFromFile(MemoryStream file)
         {
             try
             {
                 // Inicialización del motor de Tesseract
                 using (var engine = new TesseractEngine(@"./tessdata", "spa", EngineMode.Default))
                 {
-                    // Verificar si el archivo es un PDF (por ejemplo, mediante la extensión del nombre de archivo)
-                    //bool esPDF = file is FileStream && ((FileStream)file).Name.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
+                    List<byte[]> imageData;
+                    List<ExtractedInfoDTO> parcialResult = new List<ExtractedInfoDTO>();
 
-                    //List<string> pngFilePaths = new List<string>();
+                    if (IsPDF(file))
+                    {
+                        imageData = ConvertPdfToPng(file, engine);
+                    }
+                    else
+                    {
+                        imageData = new List<byte[]>{
+                            file.ToArray()
+                        };
+                    }
 
-                    //if (false)
-                    //{
-                    //    // Convertir el PDF a PNG y obtener las rutas de archivo de las imágenes PNG generadas
-                    //    //pngFilePaths = ConvertirPDFAPNG(file, engine);
-                    //    ConvertirPDFAPNG(file, engine, pngFilePaths);
-
-                    //}
-                    //else
-                    //{
-                    //    string tempFilePath = Path.GetTempFileName();
-                    //    using (var tempFileStream = File.OpenWrite(tempFilePath))
-                    //    {
-                    //        file.CopyTo(tempFileStream);
-                    //    }
-                    //    pngFilePaths.Add(tempFilePath);
-                    //}
-
-                    //// Iterar sobre las rutas de archivo de las imágenes PNG generadas o del Stream original
-                    //int i = 1;
-                    //foreach (var pngFilePath in pngFilePaths)
-                    //{
-                    //    ProcesarArchivo(pngFilePath, engine);
-                    //    Console.WriteLine("Página " + i);
-                    //    i++;
-                    //}
-                    ProcesarArchivo(file, engine);
-
+                    foreach (var data in imageData) 
+                    {
+                        using (var img = Pix.LoadFromMemory(data))
+                        {
+                            using (var page = engine.Process(img))
+                            {
+                                ExtractedInfoDTO result = GetInformation(page);
+                                parcialResult.Add(result);
+                            }
+                        }
+                    }
+                    return CreateFinalResult(parcialResult);
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Se lanzó una excepción: {ex.Message}");
+                throw new ApiException(ErrorCode.FAIL_PARSING_FILE);
             }
-            return new ExtractedInfoDTO();
+
         }
 
-        static void ConvertirPDFAPNG(Stream fileStream, TesseractEngine engine, List<string> pngFilePaths)
+        private ExtractedInfoDTO CreateFinalResult(List<ExtractedInfoDTO> parcialResult)
         {
-            //List<string> pngFilePaths = new List<string>();
+            float meanConfidence = 0;
+            int elementCount = parcialResult.Count;
 
+            StringBuilder text = new StringBuilder();
+
+            foreach (ExtractedInfoDTO result in parcialResult)
+            {
+                meanConfidence +=  result.Confidence;
+                text.Append(result.Text);
+            }
+
+            return ExtractedInfoDTO.Builder()
+                .Confidence(meanConfidence / elementCount)
+                .Text(text.ToString())
+                .Build();
+        }
+
+        private static bool IsPDF(MemoryStream file)
+        {
+            byte[] header = new byte[4]; // ajusta el tamaño del array según la firma mágica del archivo
+            file.Seek(0, SeekOrigin.Begin);
+            file.Read(header, 0, header.Length);
+
+            return header[0] == 0x25 && header[1] == 0x50 && header[2] == 0x44 && header[3] == 0x46;
+        }
+
+        static List<byte[]> ConvertPdfToPng(MemoryStream file, TesseractEngine engine)
+        {
             try
             {
-                byte[] pdfFileAsByte;
-
-                // Verificar si el Stream es un FileStream y leer los datos del archivo
-                if (fileStream is FileStream)
-                {
-                    pdfFileAsByte = File.ReadAllBytes(((FileStream)fileStream).Name);
-                }
-                else
-                {
-                    // El Stream no es un FileStream, leer los datos del Stream
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        fileStream.CopyTo(memoryStream);
-                        pdfFileAsByte = memoryStream.ToArray();
-                    }
-                }
+                byte[] pdfFileAsByte = file.ToArray();
 
                 // Convertir el PDF a PNG
                 List<byte[]> pngFilesAsBytes = Freeware.Pdf2Png.ConvertAllPages(pdfFileAsByte);
+                return pngFilesAsBytes;
 
-                string pdfFileNameWithoutExtension = Path.GetFileNameWithoutExtension(((FileStream)fileStream).Name);
-                int pageCounter = 0;
-
-                // Guardar cada página convertida como un archivo PNG y agregar la ruta al listado
-                foreach (byte[] onePngAsBytes in pngFilesAsBytes)
-                {
-                    pageCounter++;
-                    string pngFilePath = Path.Combine(@"./images/PdfsToPng/", $"{pdfFileNameWithoutExtension}_{pageCounter}.png");
-                    File.WriteAllBytes(pngFilePath, onePngAsBytes);
-                    pngFilePaths.Add(pngFilePath);
-                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Se lanzó una excepción durante la conversión de PDF a PNG: {ex.Message}");
-            }
+                throw ex;
 
-            //return pngFilePaths;
+            }
         }
 
 
-        static void ProcesarArchivo(MemoryStream file, TesseractEngine engine)
+        static ExtractedInfoDTO GetInformation(Page page)
         {
-            //byte[] imageData = File.ReadAllBytes(file);
-            byte[] imageData = file.ToArray();
-
-            using (var img = Pix.LoadFromMemory(imageData))
+            ExtractedInfoDTO infoDTO = new ExtractedInfoDTO();
+            var text = page.GetText();
+            bool hasLetters = text.Any(char.IsLetter);
+            if (hasLetters)
             {
-                using (var page = engine.Process(img))
-                {
-                    var text = page.GetText();
-                    bool contieneLetras = text.Any(char.IsLetter);
-                    if (contieneLetras)
-                    {
-                        Console.WriteLine("Mean confidence: {0}", page.GetMeanConfidence());
-                        Console.WriteLine("Text (GetText): {0}", text);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Imagen ilustrativa");
-                    }
-                }
+                infoDTO.Text = text;
+                infoDTO.Confidence = page.GetMeanConfidence();
             }
+            else
+            {
+                Console.WriteLine("Imagen ilustrativa");
+            }
+            return infoDTO;
         }
+
     }
 }

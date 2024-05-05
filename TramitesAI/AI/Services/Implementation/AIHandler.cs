@@ -20,7 +20,7 @@ namespace TramitesAI.AI.Services.Implementation
             return _iAIAnalyzer.determineType(requestDTO);
         }
 
-        public AnalyzedInformationDTO ProcessInfo(List<Stream> files, RequestDTO requestDTO)
+        public AnalyzedInformationDTO ProcessInfo(List<MemoryStream> files, RequestDTO requestDTO)
         {
             // Extract info from files
             List<ExtractedInfoDTO> infoFromFiles = _iAIInformationExtractor.extractInfoFromFiles(files);
