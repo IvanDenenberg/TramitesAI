@@ -63,7 +63,6 @@ namespace TramitesAI.Business.Services.Implementation
         {
             // Return id_tramite
             return _AIHandler.DetermineType(requestDTO);
-          
         }
 
         private ResponseDTO GenerateResponse(AnalyzedInformationDTO analyzedInformation)
@@ -84,17 +83,23 @@ namespace TramitesAI.Business.Services.Implementation
             _ = _processedCasesRepository.Update(id, processedCasesDTO);
         }
 
-        private List<FileStream> GetFilesFromRequest(List<string> attachments)
+        private List<Stream> GetFilesFromRequest(List<string> attachments, string msgId)
         {
-            List<FileStream> files = new List<FileStream>();
-            foreach (string attachment in attachments)
+            try
             {
-                //TODO Add full path
-                FileStream file = _fileSearcher.GetFile(attachment);
-                files.Add(file);
-            }
+                List<Stream> files = new();
+                foreach (string attachment in attachments)
+                {
+                    Stream file = _fileSearcher.GetFile(attachment, msgId);
+                    files.Add(file);
+                }
 
-            return files;
+                return files;
+            }
+            catch (ApiException)
+            {
+                throw;
+            }
         }
 
         private async Task<string> SaveNewCaseAsync(RequestDTO requestDTO, string type)
