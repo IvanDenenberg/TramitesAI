@@ -31,14 +31,14 @@ namespace TramitesAI.Business.Services.Implementation
             try
             {
                 // Determine the type and validity
-                string type = DetermineType(requestDTO);
+                //string type = DetermineType(requestDTO);
 
                 // Extract info from the request and save it in the database
-                string id = await SaveNewCaseAsync(requestDTO, type);
+                //string id = await SaveNewCaseAsync(requestDTO, type);
 
                 // Get files from external storage
-                List<Stream> files = GetFilesFromRequest(requestDTO.Attachments, requestDTO.MsgId);
-
+                //List<FileStream> files = GetFilesFromRequest(requestDTO.Attachments);
+                List<MemoryStream> files = new();
                 // Process Case
                 // Extract info from attachments and analyze
                 AnalyzedInformationDTO analyzedInformation = _AIHandler.ProcessInfo(files, requestDTO);
@@ -46,6 +46,8 @@ namespace TramitesAI.Business.Services.Implementation
                 //Generate Response
                 ResponseDTO responseDTO = GenerateResponse(analyzedInformation);
 
+                string type="hola";
+                string id = "1";
                 // Update with response
                 UpdateCase(responseDTO, id, type);
 

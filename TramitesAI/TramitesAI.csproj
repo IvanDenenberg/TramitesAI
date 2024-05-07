@@ -18,14 +18,23 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Freeware.Pdf2Png" Version="1.0.1" />
+    <PackageReference Include="libpng-msvc-x64" Version="1.6.33.8807" />
+    <PackageReference Include="libpng-v142" Version="1.6.37.2" />
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.68.0.3373" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.4" />
+    <PackageReference Include="Pdf.Ocr" Version="4.4.4.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.4" />
+    <PackageReference Include="Tesseract" Version="5.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="AI\Domain\Enums\" />
     <Folder Include="AI\Services\Infrastructure\" />
+    <Folder Include="Business\Services\Implementation\" />
+    <Folder Include="Business\Services\Interfaces\" />
+    <Folder Include="images\PdfsToPng\" />
     <Folder Include="Repository\Configuration\" />
     <Folder Include="Business\Domain\Enums\" />
     <Folder Include="Business\Services\Infrastructure\" />

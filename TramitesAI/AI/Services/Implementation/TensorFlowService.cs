@@ -6,7 +6,7 @@ namespace TramitesAI.AI.Services.Implementation
 {
     public class TensorFlowService : IAIAnalyzer
     {
-        public AnalyzedInformationDTO analyzeInformation(ExtractedInfoDTO infoFromFiles, RequestDTO requestDTO)
+        public AnalyzedInformationDTO analyzeInformation(List<ExtractedInfoDTO> infoFromFiles, RequestDTO requestDTO)
         {
             throw new NotImplementedException();
         }
