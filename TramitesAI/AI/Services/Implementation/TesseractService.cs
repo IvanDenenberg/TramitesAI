@@ -27,7 +27,7 @@ namespace TramitesAI.AI.Services.Implementation
         {
             try
             {
-                // Inicialización del motor de Tesseract
+                // Initialization of the Tesseract engine
                 using (var engine = new TesseractEngine(@"./tessdata", "spa", EngineMode.Default))
                 {
                     List<byte[]> imageData;
@@ -66,6 +66,8 @@ namespace TramitesAI.AI.Services.Implementation
 
         }
 
+
+        //Create and return the ExtractedInfoDTO object with the processed data.
         private ExtractedInfoDTO CreateFinalResult(List<ExtractedInfoDTO> parcialResult)
         {
             float meanConfidence = 0;
@@ -79,6 +81,7 @@ namespace TramitesAI.AI.Services.Implementation
                 text.Append(result.Text);
             }
 
+            Console.WriteLine("ExtractedInfoDTO created");
             return ExtractedInfoDTO.Builder()
                 .Confidence(meanConfidence / elementCount)
                 .Text(text.ToString())
@@ -87,7 +90,7 @@ namespace TramitesAI.AI.Services.Implementation
 
         private static bool IsPDF(MemoryStream file)
         {
-            byte[] header = new byte[4]; // ajusta el tamaño del array según la firma mágica del archivo
+            byte[] header = new byte[4]; // Adjust the array size according to the file's magic signature (%PDF)
             file.Seek(0, SeekOrigin.Begin);
             file.Read(header, 0, header.Length);
 
@@ -100,20 +103,21 @@ namespace TramitesAI.AI.Services.Implementation
             {
                 byte[] pdfFileAsByte = file.ToArray();
 
-                // Convertir el PDF a PNG
+                // Convert the PDF to PNG
                 List<byte[]> pngFilesAsBytes = Freeware.Pdf2Png.ConvertAllPages(pdfFileAsByte);
                 return pngFilesAsBytes;
 
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Se lanzó una excepción durante la conversión de PDF a PNG: {ex.Message}");
+                Console.WriteLine($"An exception was thrown during the PDF to PNG conversion: {ex.Message}");
                 throw ex;
 
             }
         }
 
 
+        // GetInformation is a method that once the information is extracted by tesseract gets the confidence and the text of each analysis
         static ExtractedInfoDTO GetInformation(Page page)
         {
             ExtractedInfoDTO infoDTO = new ExtractedInfoDTO();
