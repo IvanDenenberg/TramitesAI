@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Text.Json;
 using TramitesAI.AI.Domain.Dto;
@@ -85,18 +86,28 @@ namespace TramitesAI.Controllers
             return Ok(value: content);
         }
 
-        // Endpoint for integration between Google Drive Downloader and Tesseract
-        [HttpGet("download-and-extract-info")]
-        public IActionResult DownloadAndExtractInfo([FromQuery] string fileName, string msgId)
+        public class DownloadRequest
         {
+            public string MsgId { get; set; }
+            public string FileName { get; set; }
+        }
 
-            // Download File
-            if (fileName == null || msgId == null)
+        // Endpoint for integration between Google Drive Downloader and Tesseract
+        [HttpPost("download-and-extract-info")]
+        public IActionResult DownloadAndExtractInfo([FromBody] DownloadRequest request)
+        {
+            if (request == null || string.IsNullOrEmpty(request.FileName) || string.IsNullOrEmpty(request.MsgId))
             {
-                return BadRequest("Not all query params sent");
+                return BadRequest("Not all required parameters are provided");
             }
 
-            MemoryStream file = _fileSearcher.GetFile(fileName, msgId);
+            // Verificar si se proporcionaron ambos valores
+            if (string.IsNullOrEmpty(request.MsgId) || string.IsNullOrEmpty(request.FileName))
+            {
+                return BadRequest("Not all required parameters are provided");
+            }
+
+            MemoryStream file = _fileSearcher.GetFile(request.FileName, request.MsgId);
             List<MemoryStream> data = new();
             data.Add(file);
 
