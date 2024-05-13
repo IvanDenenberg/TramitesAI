@@ -31,14 +31,13 @@ namespace TramitesAI.Business.Services.Implementation
             try
             {
                 // Determine the type and validity
-                //string type = DetermineType(requestDTO);
+                string type = DetermineType(requestDTO);
 
                 // Extract info from the request and save it in the database
-                //string id = await SaveNewCaseAsync(requestDTO, type);
+                string id = await SaveNewCaseAsync(requestDTO, type);
 
                 // Get files from external storage
-                //List<FileStream> files = GetFilesFromRequest(requestDTO.Attachments);
-                List<MemoryStream> files = new();
+                List<MemoryStream> files = GetFilesFromRequest(requestDTO.Attachments, requestDTO.MsgId);
                 // Process Case
                 // Extract info from attachments and analyze
                 AnalyzedInformationDTO analyzedInformation = _AIHandler.ProcessInfo(files, requestDTO);
@@ -46,8 +45,6 @@ namespace TramitesAI.Business.Services.Implementation
                 //Generate Response
                 ResponseDTO responseDTO = GenerateResponse(analyzedInformation);
 
-                string type="hola";
-                string id = "1";
                 // Update with response
                 UpdateCase(responseDTO, id, type);
 
@@ -83,14 +80,14 @@ namespace TramitesAI.Business.Services.Implementation
             _ = _processedCasesRepository.Update(id, processedCasesDTO);
         }
 
-        private List<Stream> GetFilesFromRequest(List<string> attachments, string msgId)
+        private List<MemoryStream> GetFilesFromRequest(List<string> attachments, string msgId)
         {
             try
             {
-                List<Stream> files = new();
+                List<MemoryStream> files = new();
                 foreach (string attachment in attachments)
                 {
-                    Stream file = _fileSearcher.GetFile(attachment, msgId);
+                    MemoryStream file = _fileSearcher.GetFile(attachment, msgId);
                     files.Add(file);
                 }
 

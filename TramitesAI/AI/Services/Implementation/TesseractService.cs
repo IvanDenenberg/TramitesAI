@@ -16,8 +16,11 @@ namespace TramitesAI.AI.Services.Implementation
 
             foreach (MemoryStream file in files)
             {
+                int position = 1;
+                Console.WriteLine("Extracting info from file " + position + " of " + files.Count);
                 ExtractedInfoDTO extractedInfo = extractInfoFromFile(file);
                 list.Add(extractedInfo);
+                position++;
             }
             return list;
 
@@ -28,14 +31,16 @@ namespace TramitesAI.AI.Services.Implementation
             try
             {
                 // Initialization of the Tesseract engine
-                using (var engine = new TesseractEngine(@"./tessdata", "spa", EngineMode.Default))
+                using (var engine = new TesseractEngine(@"./Tesseract/tessdata", "spa", EngineMode.Default))
                 {
                     List<byte[]> imageData;
                     List<ExtractedInfoDTO> parcialResult = new List<ExtractedInfoDTO>();
 
                     if (IsPDF(file))
                     {
+                        Console.WriteLine("Its a PDF file, parsing to PNG");
                         imageData = ConvertPdfToPng(file, engine);
+                        Console.WriteLine("Parsed");
                     }
                     else
                     {
@@ -55,12 +60,13 @@ namespace TramitesAI.AI.Services.Implementation
                             }
                         }
                     }
+                    Console.WriteLine("Information extracted, creating DTO");
                     return CreateFinalResult(parcialResult);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Se lanzó una excepción: {ex.Message}");
+                Console.WriteLine($"Error parsing file: {ex.Message}");
                 throw new ApiException(ErrorCode.FAIL_PARSING_FILE);
             }
 
@@ -111,7 +117,7 @@ namespace TramitesAI.AI.Services.Implementation
             catch (Exception ex)
             {
                 Console.WriteLine($"An exception was thrown during the PDF to PNG conversion: {ex.Message}");
-                throw ex;
+                throw;
 
             }
         }
