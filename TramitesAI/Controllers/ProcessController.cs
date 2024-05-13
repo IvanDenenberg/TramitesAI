@@ -9,7 +9,7 @@ namespace TramitesAI.Controllers
     [ApiController]
     public class ProcessController : ControllerBase
     {
-        private IBusinessService _businessService;
+        private readonly IBusinessService _businessService;
 
         public ProcessController(IBusinessService businessService)
         {

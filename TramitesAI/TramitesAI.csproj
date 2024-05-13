@@ -8,12 +8,16 @@
 
   <ItemGroup>
     <Compile Remove="a\**" />
+    <Compile Remove="images\**" />
     <Compile Remove="Orchestrator\**" />
     <Content Remove="a\**" />
+    <Content Remove="images\**" />
     <Content Remove="Orchestrator\**" />
     <EmbeddedResource Remove="a\**" />
+    <EmbeddedResource Remove="images\**" />
     <EmbeddedResource Remove="Orchestrator\**" />
     <None Remove="a\**" />
+    <None Remove="images\**" />
     <None Remove="Orchestrator\**" />
   </ItemGroup>
 
@@ -34,10 +38,25 @@
     <Folder Include="AI\Services\Infrastructure\" />
     <Folder Include="Business\Services\Implementation\" />
     <Folder Include="Business\Services\Interfaces\" />
-    <Folder Include="images\PdfsToPng\" />
     <Folder Include="Repository\Configuration\" />
     <Folder Include="Business\Domain\Enums\" />
     <Folder Include="Business\Services\Infrastructure\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="C:\Users\ivand\.nuget\packages\tesseract\5.2.0\build\\..\x64\leptonica-1.82.0.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="C:\Users\ivand\.nuget\packages\tesseract\5.2.0\build\\..\x64\tesseract50.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="C:\Users\ivand\.nuget\packages\tesseract\5.2.0\build\\..\x86\leptonica-1.82.0.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="C:\Users\ivand\.nuget\packages\tesseract\5.2.0\build\\..\x86\tesseract50.dll" />
   </ItemGroup>
 
 </Project>

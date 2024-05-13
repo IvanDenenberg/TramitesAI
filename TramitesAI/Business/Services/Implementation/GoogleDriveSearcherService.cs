@@ -1,10 +1,8 @@
 ﻿using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
-using Google.Apis.Download;
 using TramitesAI.Business.Services.Interfaces;
 using TramitesAI.Common.Exceptions;
-using Google.Apis.Drive.v3.Data;
 
 namespace TramitesAI.Business.Services.Implementation
 {
