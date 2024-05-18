@@ -10,15 +10,13 @@ namespace TramitesAI.Business.Services.Implementation
 {
     public class BusinessService : IBusinessService
     {
-        private IRepository<ProcessedCasesDTO> _processedCasesRepository;
-        private IRepository<AssociatedFilesDTO> _associatedFilesRepository;
+        private IRepositorio<SolicitudProcesada> _processedCasesRepository;
         private IAIHandler _AIHandler;
         private IFileSearcher _fileSearcher;
 
-        public BusinessService(IRepository<ProcessedCasesDTO> processedCasesRepository, IRepository<AssociatedFilesDTO> associatedFilesRepository, IAIHandler aIHandler, IFileSearcher fileSearcher)
+        public BusinessService(IRepositorio<SolicitudProcesada> processedCasesRepository, IAIHandler aIHandler, IFileSearcher fileSearcher)
         {
             _processedCasesRepository = processedCasesRepository;
-            _associatedFilesRepository = associatedFilesRepository;
             _AIHandler = aIHandler;
             _fileSearcher = fileSearcher;
         }
@@ -32,11 +30,12 @@ namespace TramitesAI.Business.Services.Implementation
         {
             try
             {
+                string requestId = await GuardarSolicitud(requestDTO);
                 // Determine the type and validity
                 string type = DetermineType(requestDTO);
 
                 // Extract info from the request and save it in the database
-                string id = await SaveNewCaseAsync(requestDTO, type);
+                int id = await SaveNewCaseAsync(requestDTO, type);
 
                 // Get files from external storage
                 List<FileStream> files = GetFilesFromRequest(requestDTO.Attachments);
@@ -59,6 +58,11 @@ namespace TramitesAI.Business.Services.Implementation
             }
         }
 
+        private Task<string> GuardarSolicitud(RequestDTO requestDTO)
+        {
+            throw new NotImplementedException();
+        }
+
         private string DetermineType(RequestDTO requestDTO)
         {
             // Return id_tramite
@@ -71,17 +75,16 @@ namespace TramitesAI.Business.Services.Implementation
             throw new ApiException(ErrorCode.UNKNOWN_ERROR);
         }
 
-        private async void UpdateCase(ResponseDTO responseDTO, string id, string typeID)
+        private async void UpdateCase(ResponseDTO responseDTO, int id, string typeID)
         {
-            ProcessedCasesDTO processedCasesDTO = await _processedCasesRepository.GetById(id);
+            SolicitudProcesada processedCasesDTO = await _processedCasesRepository.LeerPorId(id);
             {
-                //Add info that was not available before analysis
-                processedCasesDTO.Response = responseDTO;
-                processedCasesDTO.UpdatedAt = DateTime.Now;
-                processedCasesDTO.TypeId = typeID;
+                // Add info that was not available before analysis
+                processedCasesDTO.Modificado = DateTime.Now;
+                processedCasesDTO.TramiteId = typeID;
             }
 
-            _ = _processedCasesRepository.Update(id, processedCasesDTO);
+            _ = _processedCasesRepository.Modificar(processedCasesDTO);
         }
 
         private List<FileStream> GetFilesFromRequest(List<string> attachments)
@@ -97,18 +100,17 @@ namespace TramitesAI.Business.Services.Implementation
             return files;
         }
 
-        private async Task<string> SaveNewCaseAsync(RequestDTO requestDTO, string type)
+        private async Task<int> SaveNewCaseAsync(RequestDTO requestDTO, string type)
         {
-            ProcessedCasesDTO processedCase = ProcessedCasesDTO.Builder()
+            SolicitudProcesada processedCase = SolicitudProcesada.Builder()
                     .MsgId(requestDTO.MsgId)
-                    .Channel(requestDTO.Channel)
+                    .Canal(requestDTO.Channel)
                     .Email(requestDTO.Email)
-                    .Request(requestDTO)
-                    .CreatedAt(requestDTO.ReceivedDate)
-                    .TypeId(type)
+                    .Creado(requestDTO.ReceivedDate)
+                    .TipoTramite(type)
                     .Build();
              
-            return await _processedCasesRepository.Create(processedCase);
+            return await _processedCasesRepository.Crear(processedCase);
         }
     }
 }
