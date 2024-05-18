@@ -7,14 +7,8 @@ namespace TramitesAI.Repository.Configuration
     {
         public IConfiguration _config { get; set; }
 
-        public ConfigDBContext(IConfiguration config)
+        public ConfigDBContext(DbContextOptions<ConfigDBContext> options) : base(options)
         {
-            _config = config;
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(_config.GetConnectionString("DatabaseConnection").Replace("SERVERNAME", "LAPTOP-C56DTAB8\\MSSQLSERVER01)"));
         }
 
         public DbSet<Archivo> Archivos { get; set; }

@@ -1,7 +1,9 @@
+using Microsoft.EntityFrameworkCore;
 using TramitesAI.AI.Services.Implementation;
 using TramitesAI.AI.Services.Interfaces;
 using TramitesAI.Business.Services.Implementation;
 using TramitesAI.Business.Services.Interfaces;
+using TramitesAI.Repository.Configuration;
 using TramitesAI.Repository.Domain.Dto;
 using TramitesAI.Repository.Implementations;
 using TramitesAI.Repository.Interfaces;
@@ -19,8 +21,13 @@ builder.Services.AddSingleton<IBusinessService, BusinessService>();
 builder.Services.AddSingleton<IAIHandler, AIHandler>();
 builder.Services.AddSingleton<IAIInformationExtractor, TesseractService>();
 builder.Services.AddSingleton<IAIAnalyzer, TensorFlowService>();
-builder.Services.AddSingleton<IRepository<ProcessedCasesDTO>, ProcessedCasesRepository>();
+builder.Services.AddSingleton<IRepositorio<SolicitudProcesada>, SolicitudProcesadaRepositorio>();
 builder.Services.AddSingleton<IFileSearcher, GoogleDriveSearcherService>();
+string server = Environment.GetEnvironmentVariable("SERVER_NAME");
+builder.Services.AddDbContext<ConfigDBContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DatabaseConnection").Replace("ENV_VAR", server)),
+    ServiceLifetime.Singleton); 
+
 
 var app = builder.Build();
 
