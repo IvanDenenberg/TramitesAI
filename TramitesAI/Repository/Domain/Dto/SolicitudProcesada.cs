@@ -5,7 +5,7 @@ namespace TramitesAI.Repository.Domain.Dto
     public class SolicitudProcesada
     {
         [Key]
-        public int Id { get; private set; }
+        public int Id { get;  set; }
         public string MsgId { get; private set; }
         public string Canal { get; private set; }
         public string Email { get; private set; }

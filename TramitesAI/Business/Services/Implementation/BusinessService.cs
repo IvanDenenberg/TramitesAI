@@ -1,9 +1,11 @@
-﻿using TramitesAI.AI.Domain.Dto;
+﻿using System.Text.Json;
+using TramitesAI.AI.Domain.Dto;
 using TramitesAI.AI.Services.Interfaces;
 using TramitesAI.Business.Domain.Dto;
 using TramitesAI.Business.Services.Interfaces;
 using TramitesAI.Common.Exceptions;
 using TramitesAI.Repository.Domain.Dto;
+using TramitesAI.Repository.Implementations;
 using TramitesAI.Repository.Interfaces;
 
 namespace TramitesAI.Business.Services.Implementation
@@ -13,12 +15,14 @@ namespace TramitesAI.Business.Services.Implementation
         private IRepositorio<SolicitudProcesada> _processedCasesRepository;
         private IAIHandler _AIHandler;
         private IFileSearcher _fileSearcher;
+        private SolicitudRepositorio _solicitudRepositorio;
 
-        public BusinessService(IRepositorio<SolicitudProcesada> processedCasesRepository, IAIHandler aIHandler, IFileSearcher fileSearcher)
+        public BusinessService(IRepositorio<SolicitudProcesada> processedCasesRepository, IAIHandler aIHandler, IFileSearcher fileSearcher, SolicitudRepositorio solicitudRepositorio)
         {
             _processedCasesRepository = processedCasesRepository;
             _AIHandler = aIHandler;
             _fileSearcher = fileSearcher;
+            _solicitudRepositorio = solicitudRepositorio; ;
         }
 
         public ResponseDTO GetById(string id)
@@ -26,29 +30,29 @@ namespace TramitesAI.Business.Services.Implementation
             throw new NotImplementedException();
         }
 
-        public async Task<ResponseDTO> ProcessAsync(RequestDTO requestDTO)
+        public async Task<ResponseDTO> ProcessAsync(SolicitudDTO solicitudDTO)
         {
             try
             {
-                string requestId = await GuardarSolicitud(requestDTO);
+                Solicitud solicitud = await GuardarSolicitud(solicitudDTO);
                 // Determine the type and validity
-                string type = DetermineType(requestDTO);
+                string tipo = DeterminarTipo(solicitudDTO);
 
                 // Extract info from the request and save it in the database
-                int id = await SaveNewCaseAsync(requestDTO, type);
+                int id = await GuardarSolicitudProcesada(solicitudDTO, tipo, solicitud);
 
                 // Get files from external storage
-                List<FileStream> files = GetFilesFromRequest(requestDTO.Attachments);
+                List<FileStream> files = GetFilesFromRequest(solicitudDTO.Attachments);
 
                 // Process Case
                 // Extract info from attachments and analyze
-                AnalyzedInformationDTO analyzedInformation = _AIHandler.ProcessInfo(files, requestDTO);
+                AnalyzedInformationDTO analyzedInformation = _AIHandler.ProcessInfo(files, solicitudDTO);
 
                 //Generate Response
                 ResponseDTO responseDTO = GenerateResponse(analyzedInformation);
 
                 // Update with response
-                UpdateCase(responseDTO, id, type);
+                UpdateCase(responseDTO, id, tipo);
 
                 return new ResponseDTO();
             }
@@ -58,12 +62,20 @@ namespace TramitesAI.Business.Services.Implementation
             }
         }
 
-        private Task<string> GuardarSolicitud(RequestDTO requestDTO)
+        public async Task<Solicitud> GuardarSolicitud(SolicitudDTO solicitudDto)
         {
-            throw new NotImplementedException();
+            string solicitudString = JsonSerializer.Serialize(solicitudDto);
+            Solicitud solicitudAGuardar = Solicitud.Builder()
+                .MensajeSolicitud(solicitudString)
+                .Build();
+
+            int id = await _solicitudRepositorio.Crear(solicitudAGuardar);
+            solicitudAGuardar.Id = id;
+
+            return solicitudAGuardar;
         }
 
-        private string DetermineType(RequestDTO requestDTO)
+        private string DeterminarTipo(SolicitudDTO requestDTO)
         {
             // Return id_tramite
             return _AIHandler.DetermineType(requestDTO);
@@ -100,17 +112,29 @@ namespace TramitesAI.Business.Services.Implementation
             return files;
         }
 
-        private async Task<int> SaveNewCaseAsync(RequestDTO requestDTO, string type)
+        private async Task<int> GuardarSolicitudProcesada(SolicitudDTO solicitudDTO, string tipo, Solicitud solicitud)
         {
-            SolicitudProcesada processedCase = SolicitudProcesada.Builder()
-                    .MsgId(requestDTO.MsgId)
-                    .Canal(requestDTO.Channel)
-                    .Email(requestDTO.Email)
-                    .Creado(requestDTO.ReceivedDate)
-                    .TipoTramite(type)
+            SolicitudProcesada solicitudProcesada = SolicitudProcesada.Builder()
+                    .MsgId(solicitudDTO.MsgId)
+                    .Canal(solicitudDTO.Channel)
+                    .Email(solicitudDTO.Email)
+                    .Creado(solicitudDTO.ReceivedDate)
+                    .TipoTramite(tipo)
+                    .Solicitud(solicitud)
                     .Build();
              
-            return await _processedCasesRepository.Crear(processedCase);
+            int id = await _processedCasesRepository.Crear(solicitudProcesada);
+            solicitudProcesada.Id = id;
+
+            ActualizarSolicitud(solicitudProcesada, solicitud.Id);
+
+            return id;
+
+        }
+
+        private void ActualizarSolicitud(SolicitudProcesada solicitudProcesada, int idSolicitud)
+        {
+            throw new NotImplementedException();
         }
     }
 }

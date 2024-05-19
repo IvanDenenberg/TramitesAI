@@ -17,17 +17,26 @@ builder.Services.AddControllers();
 //builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 
+// Services config
 builder.Services.AddSingleton<IBusinessService, BusinessService>();
 builder.Services.AddSingleton<IAIHandler, AIHandler>();
 builder.Services.AddSingleton<IAIInformationExtractor, TesseractService>();
 builder.Services.AddSingleton<IAIAnalyzer, TensorFlowService>();
-builder.Services.AddSingleton<IRepositorio<SolicitudProcesada>, SolicitudProcesadaRepositorio>();
 builder.Services.AddSingleton<IFileSearcher, GoogleDriveSearcherService>();
+
+// Database config
 string server = Environment.GetEnvironmentVariable("SERVER_NAME");
 builder.Services.AddDbContext<ConfigDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DatabaseConnection").Replace("ENV_VAR", server)),
-    ServiceLifetime.Singleton); 
+    ServiceLifetime.Singleton);
 
+// Repositories config
+builder.Services.AddSingleton<IRepositorio<Archivo>, ArchivoRepositorio>();
+builder.Services.AddSingleton<IRepositorio<Dato>, DatoRepositorio>();
+builder.Services.AddSingleton<IRepositorio<Respuesta>, RespuestaRepositorio>();
+builder.Services.AddSingleton<IRepositorio<SolicitudProcesada>, SolicitudProcesadaRepositorio>();
+builder.Services.AddSingleton<IRepositorio<Solicitud>, SolicitudRepositorio>();
+builder.Services.AddSingleton<IRepositorio<Tramite>, TramiteRepositorio>();
 
 var app = builder.Build();
 
