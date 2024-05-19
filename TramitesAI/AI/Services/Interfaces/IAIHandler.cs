@@ -6,7 +6,7 @@ namespace TramitesAI.AI.Services.Interfaces
 {
     public interface IAIHandler
     {
-        string DetermineType(RequestDTO requestDTO);
-        AnalyzedInformationDTO ProcessInfo(List<FileStream> files, RequestDTO requestDTO);
+        string DetermineType(SolicitudDTO requestDTO);
+        AnalyzedInformationDTO ProcessInfo(List<FileStream> files, SolicitudDTO requestDTO);
     }
 }

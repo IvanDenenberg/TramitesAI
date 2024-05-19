@@ -1,6 +1,6 @@
 ﻿namespace TramitesAI.Business.Domain.Dto
 {
-    public class RequestDTO
+    public class SolicitudDTO
     {
         public string MsgId { get; set; }
         public string Channel { get; set; }
