@@ -7,4 +7,6 @@ obj
 packages/
 Debug/
 TramitesAI/bin/
+TramitesAI/images/
+TramitesAI/Credentials/
 TramitesAI/Migrations

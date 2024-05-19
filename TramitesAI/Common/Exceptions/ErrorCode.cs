@@ -33,8 +33,8 @@
         [ErrorDetails("fail generating ID")]
         FAIL_GENERATING_ID = 5,
 
-        [ErrorDetails("fail parsing transfer")]
-        FAIL_PARSING_TRANSFER = 6,
+        [ErrorDetails("fail parsing file")]
+        FAIL_PARSING_FILE = 6,
 
         [ErrorDetails("config not found", 404)]
         CONFIG_NOT_FOUND = 7,

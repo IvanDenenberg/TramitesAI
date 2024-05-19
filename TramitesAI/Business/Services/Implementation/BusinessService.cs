@@ -42,8 +42,7 @@ namespace TramitesAI.Business.Services.Implementation
                 int id = await GuardarSolicitudProcesada(solicitudDTO, tipo, solicitud);
 
                 // Get files from external storage
-                List<FileStream> files = GetFilesFromRequest(solicitudDTO.Attachments);
-
+                List<MemoryStream> files = GetFilesFromRequest(requestDTO.Attachments, requestDTO.MsgId);
                 // Process Case
                 // Extract info from attachments and analyze
                 AnalyzedInformationDTO analyzedInformation = _AIHandler.ProcessInfo(files, solicitudDTO);
@@ -79,7 +78,6 @@ namespace TramitesAI.Business.Services.Implementation
         {
             // Return id_tramite
             return _AIHandler.DetermineType(requestDTO);
-          
         }
 
         private ResponseDTO GenerateResponse(AnalyzedInformationDTO analyzedInformation)
@@ -99,17 +97,23 @@ namespace TramitesAI.Business.Services.Implementation
             _ = _processedCasesRepository.Modificar(processedCasesDTO);
         }
 
-        private List<FileStream> GetFilesFromRequest(List<string> attachments)
+        private List<MemoryStream> GetFilesFromRequest(List<string> attachments, string msgId)
         {
-            List<FileStream> files = new List<FileStream>();
-            foreach (string attachment in attachments)
+            try
             {
-                //TODO Add full path
-                FileStream file = _fileSearcher.GetFile(attachment);
-                files.Add(file);
-            }
+                List<MemoryStream> files = new();
+                foreach (string attachment in attachments)
+                {
+                    MemoryStream file = _fileSearcher.GetFile(attachment, msgId);
+                    files.Add(file);
+                }
 
-            return files;
+                return files;
+            }
+            catch (ApiException)
+            {
+                throw;
+            }
         }
 
         private async Task<int> GuardarSolicitudProcesada(SolicitudDTO solicitudDTO, string tipo, Solicitud solicitud)
