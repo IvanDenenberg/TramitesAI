@@ -42,7 +42,7 @@ namespace TramitesAI.Business.Services.Implementation
                 int id = await GuardarSolicitudProcesada(solicitudDTO, tipo, solicitud);
 
                 // Get files from external storage
-                List<MemoryStream> files = GetFilesFromRequest(requestDTO.Attachments, requestDTO.MsgId);
+                List<MemoryStream> files = GetFilesFromRequest(solicitudDTO.Attachments, solicitudDTO.MsgId);
                 // Process Case
                 // Extract info from attachments and analyze
                 AnalyzedInformationDTO analyzedInformation = _AIHandler.ProcessInfo(files, solicitudDTO);
