@@ -12,17 +12,17 @@ namespace TramitesAI.Business.Services.Implementation
 {
     public class BusinessService : IBusinessService
     {
-        private IRepositorio<SolicitudProcesada> _processedCasesRepository;
+        private IRepositorio<SolicitudProcesada> _solicitudProcesadaRepositorio;
         private IAIHandler _AIHandler;
         private IFileSearcher _fileSearcher;
-        private SolicitudRepositorio _solicitudRepositorio;
+        private IRepositorio<Solicitud> _solicitudRepositorio;
 
-        public BusinessService(IRepositorio<SolicitudProcesada> processedCasesRepository, IAIHandler aIHandler, IFileSearcher fileSearcher, SolicitudRepositorio solicitudRepositorio)
+        public BusinessService(IRepositorio<SolicitudProcesada> solicitudProcesadaRepositorio, IAIHandler aIHandler, IFileSearcher fileSearcher, IRepositorio<Solicitud> solicitudRepositorio)
         {
-            _processedCasesRepository = processedCasesRepository;
+            _solicitudProcesadaRepositorio = solicitudProcesadaRepositorio;
             _AIHandler = aIHandler;
             _fileSearcher = fileSearcher;
-            _solicitudRepositorio = solicitudRepositorio; ;
+            _solicitudRepositorio = solicitudRepositorio;
         }
 
         public ResponseDTO GetById(string id)
@@ -61,7 +61,7 @@ namespace TramitesAI.Business.Services.Implementation
             }
         }
 
-        public async Task<Solicitud> GuardarSolicitud(SolicitudDTO solicitudDto)
+        private async Task<Solicitud> GuardarSolicitud(SolicitudDTO solicitudDto)
         {
             string solicitudString = JsonSerializer.Serialize(solicitudDto);
             Solicitud solicitudAGuardar = Solicitud.Builder()
@@ -87,14 +87,14 @@ namespace TramitesAI.Business.Services.Implementation
 
         private async void UpdateCase(ResponseDTO responseDTO, int id, string typeID)
         {
-            SolicitudProcesada processedCasesDTO = await _processedCasesRepository.LeerPorId(id);
+            SolicitudProcesada processedCasesDTO = await _solicitudProcesadaRepositorio.LeerPorId(id);
             {
                 // Add info that was not available before analysis
                 processedCasesDTO.Modificado = DateTime.Now;
                 processedCasesDTO.TramiteId = typeID;
             }
 
-            _ = _processedCasesRepository.Modificar(processedCasesDTO);
+            _ = _solicitudProcesadaRepositorio.Modificar(processedCasesDTO);
         }
 
         private List<MemoryStream> GetFilesFromRequest(List<string> attachments, string msgId)
@@ -127,7 +127,7 @@ namespace TramitesAI.Business.Services.Implementation
                     .Solicitud(solicitud)
                     .Build();
              
-            int id = await _processedCasesRepository.Crear(solicitudProcesada);
+            int id = await _solicitudProcesadaRepositorio.Crear(solicitudProcesada);
             solicitudProcesada.Id = id;
 
             ActualizarSolicitud(solicitudProcesada, solicitud.Id);

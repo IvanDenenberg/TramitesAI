@@ -26,8 +26,14 @@ builder.Services.AddSingleton<IFileSearcher, GoogleDriveSearcherService>();
 
 // Database config
 string server = Environment.GetEnvironmentVariable("SERVER_NAME");
+string connectionString = "DatabaseConnection";
+connectionString += server;
+Console.WriteLine(connectionString);
+
 builder.Services.AddDbContext<ConfigDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DatabaseConnection").Replace("ENV_VAR", server)),
+    options.UseSqlServer(builder.Configuration.GetConnectionString(connectionString))
+    .EnableSensitiveDataLogging()
+    .LogTo(Console.WriteLine, LogLevel.Information),
     ServiceLifetime.Singleton);
 
 // Repositories config

@@ -12,7 +12,9 @@ namespace TramitesAI.Repository.Domain.Dto
         public string TramiteId { get; set; }
         public DateTime Creado { get; private set; }
         public DateTime Modificado { get;  set; }
+        public int SolicitudId { get; set; }
         public Solicitud Solicitud { get; set; }
+        public int RespuestaId { get; set; }
         public Respuesta Respuesta { get; set; }
 
         private SolicitudProcesada() { }
