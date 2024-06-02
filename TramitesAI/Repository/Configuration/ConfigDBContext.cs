@@ -50,13 +50,13 @@ namespace TramitesAI.Repository.Configuration
 
             modelBuilder.Entity<SolicitudProcesada>()
                 .HasOne(sp => sp.Solicitud)
-                .WithOne(s => s.SolicitudProcesada)
-                .HasForeignKey<SolicitudProcesada>(sp => sp.SolicitudId);
+                .WithMany()
+                .HasForeignKey(sp => sp.SolicitudId);
 
             modelBuilder.Entity<SolicitudProcesada>()
                 .HasOne(sp => sp.Respuesta)
-                .WithOne(s => s.SolicitudProcesada)
-                .HasForeignKey<SolicitudProcesada>(sp => sp.RespuestaId);
+                .WithMany()
+                .HasForeignKey(sp => sp.RespuestaId);         
 
             base.OnModelCreating(modelBuilder);
         }
