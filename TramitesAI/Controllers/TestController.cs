@@ -4,7 +4,11 @@ using System.IO;
 using System.Text.Json;
 using TramitesAI.AI.Domain.Dto;
 using TramitesAI.AI.Services.Interfaces;
+using TramitesAI.Business.Domain.Dto;
 using TramitesAI.Business.Services.Interfaces;
+using TramitesAI.Repository.Domain.Dto;
+using TramitesAI.Repository.Implementations;
+using TramitesAI.Repository.Interfaces;
 
 namespace TramitesAI.Controllers
 {
@@ -14,11 +18,15 @@ namespace TramitesAI.Controllers
     {
         private readonly IAIInformationExtractor _informationExtractor;
         private readonly IFileSearcher _fileSearcher;
+        private readonly IRepositorio<Solicitud> _repositorioSolicitud;
+        private readonly IRepositorio<SolicitudProcesada> _repositorioSolicitudProcesada;
 
-        public TestController(IAIInformationExtractor informationExtractor, IFileSearcher fileSearcher)
+        public TestController(IAIInformationExtractor informationExtractor, IFileSearcher fileSearcher, IRepositorio<Solicitud> repositorioSolicitud, IRepositorio<SolicitudProcesada> repositorioSolicitudProcesada)
         {
             _informationExtractor = informationExtractor;
             _fileSearcher = fileSearcher;
+            _repositorioSolicitud = repositorioSolicitud;
+            _repositorioSolicitudProcesada = repositorioSolicitudProcesada;
         }
 
         // Endpoint to test Extract Info from a Local File
@@ -123,6 +131,82 @@ namespace TramitesAI.Controllers
 
             }
             return Ok(value: response);
+        }
+
+        [HttpPost("crear-solicitud")]
+        public async Task<IActionResult> CrearSolicitudAsync([FromBody] SolicitudDTO solicitudDTO)
+        {
+            try
+            {
+                // Serializa la solicitudDTO a un string JSON
+                string solicitudString = JsonSerializer.Serialize(solicitudDTO);
+
+                // Construye la entidad Solicitud a partir del string serializado
+                Solicitud solicitudAGuardar = Solicitud.Builder()
+                    .MensajeSolicitud(solicitudString)
+                    .Build();
+
+                // Guarda la solicitud en el repositorio y obtiene el ID resultante
+                int id = await _repositorioSolicitud.Crear(solicitudAGuardar);
+                solicitudAGuardar.Id = id;
+
+                // Devuelve un resultado 201 (Created) con la entidad creada
+                return Created($"api/crear-solicitud/{solicitudAGuardar.Id}", solicitudAGuardar);
+            }
+            catch (Exception ex)
+            {
+                // Manejo de errores (log, retorno de un mensaje de error, etc.)
+                return StatusCode(500, "Ocurrió un error al crear la solicitud.");
+            }
+        }
+
+        [HttpGet("leer-solicitud/{id}")]
+        public async Task<IActionResult> LeerSolicitudAsync(int id)
+        {
+            Solicitud solicitud = await _repositorioSolicitud.LeerPorId(id);
+            return Ok(solicitud);
+        }
+
+        [HttpPost("crear-solicitud-procesada")]
+        public async Task<IActionResult> CrearSolicitudProcesadaAsync([FromBody] JsonElement solicitudJson)
+        {
+            try
+            {
+                // Extraer datos del JSON
+                string msgId = solicitudJson.GetProperty("MsgId").GetString();
+                string canal = solicitudJson.GetProperty("Channel").GetString();
+                string email = solicitudJson.GetProperty("Email").GetString();
+                int solicitudId = solicitudJson.GetProperty("SolicitudId").GetInt32();
+                DateTime creado = solicitudJson.GetProperty("ReceivedDate").GetDateTime();
+
+                // Construye la entidad Solicitud a partir del string serializado
+                SolicitudProcesada solicitudProcesadaAGuardar = SolicitudProcesada.Builder()
+                    .MsgId(msgId)
+                    .Canal(canal)
+                    .Email(email)
+                    .Creado(creado)
+                    .TipoTramite(1)
+                    .Solicitud(await _repositorioSolicitud.LeerPorId(solicitudId))
+                    .Build();
+
+                // Guarda la solicitud en el repositorio y obtiene el ID resultante
+                int id = await _repositorioSolicitudProcesada.Crear(solicitudProcesadaAGuardar);
+                solicitudProcesadaAGuardar.Id = id;
+
+                // Devuelve un resultado 201 (Created) con la entidad creada
+                return Created($"api/crear-solicitud/{solicitudProcesadaAGuardar.Id}", solicitudProcesadaAGuardar);
+            }
+            catch (Exception ex)
+            {
+                // Manejo de errores (log, retorno de un mensaje de error, etc.)
+                return StatusCode(500, "Ocurrió un error al crear la solicitud.");
+            }
+        }
+        [HttpGet("leer-solicitud-procesada/{id}")]
+        public async Task<IActionResult> LeerSolicitudProcesadaAsync(int id)
+        {
+            SolicitudProcesada solicitud = await _repositorioSolicitudProcesada.LeerPorId(id);
+            return Ok(solicitud);
         }
     }
 }
