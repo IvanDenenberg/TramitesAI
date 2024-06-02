@@ -34,7 +34,6 @@ namespace TramitesAI.Repository.Implementations
         public async Task<Solicitud> LeerPorId(int id)
         {
             Solicitud solicitud = await _context.Solicitudes
-                     .Include(s => s.SolicitudProcesada)
                      .FirstOrDefaultAsync(ta => ta.Id == id);
 
             return solicitud == null ? throw new ApiException(ErrorCode.NOT_FOUND) : solicitud;
@@ -43,7 +42,6 @@ namespace TramitesAI.Repository.Implementations
         public async Task<IEnumerable<Solicitud>> LeerTodos()
         {
             return await _context.Solicitudes
-                     .Include(s => s.SolicitudProcesada)
                      .ToListAsync();
         }
 
