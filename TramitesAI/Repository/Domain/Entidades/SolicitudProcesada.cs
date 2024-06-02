@@ -9,13 +9,13 @@ namespace TramitesAI.Repository.Domain.Dto
         public string MsgId { get; private set; }
         public string Canal { get; private set; }
         public string Email { get; private set; }
-        public string TramiteId { get; set; }
+        public int? TramiteId { get; set; }
         public DateTime Creado { get; private set; }
         public DateTime Modificado { get;  set; }
         public int SolicitudId { get; set; }
         public Solicitud Solicitud { get; set; }
-        public int RespuestaId { get; set; }
-        public Respuesta Respuesta { get; set; }
+        public int? RespuestaId { get; set; }
+        public Respuesta? Respuesta { get; set; }
 
         private SolicitudProcesada() { }
 
@@ -59,7 +59,7 @@ namespace TramitesAI.Repository.Domain.Dto
             }
 
 
-            public SolicitudProcesadaBuilder TipoTramite(string tipo)
+            public SolicitudProcesadaBuilder TipoTramite(int tipo)
             {
                 dto.TramiteId = tipo;
                 return this;

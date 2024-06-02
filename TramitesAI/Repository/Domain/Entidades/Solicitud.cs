@@ -7,7 +7,6 @@ namespace TramitesAI.Repository.Domain.Dto
         [Key]
         public int Id { get; set; }
         public string MensajeSolicitud { get; set; }
-        public SolicitudProcesada SolicitudProcesada { get; set; }
 
         private Solicitud() { }
 
