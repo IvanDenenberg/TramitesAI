@@ -15,7 +15,7 @@ namespace TramitesAI.AI.Services.Implementation
             _iAIInformationExtractor = iAIInformationExtractor;
         }
 
-        public string DetermineType(SolicitudDTO requestDTO)
+        public int DetermineType(SolicitudDTO requestDTO)
         {
             return _iAIAnalyzer.determineType(requestDTO);
         }

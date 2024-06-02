@@ -36,7 +36,7 @@ namespace TramitesAI.Business.Services.Implementation
             {
                 Solicitud solicitud = await GuardarSolicitud(solicitudDTO);
                 // Determine the type and validity
-                string tipo = DeterminarTipo(solicitudDTO);
+                int tipo = DeterminarTipo(solicitudDTO);
 
                 // Extract info from the request and save it in the database
                 int id = await GuardarSolicitudProcesada(solicitudDTO, tipo, solicitud);
@@ -74,7 +74,7 @@ namespace TramitesAI.Business.Services.Implementation
             return solicitudAGuardar;
         }
 
-        private string DeterminarTipo(SolicitudDTO requestDTO)
+        private int DeterminarTipo(SolicitudDTO requestDTO)
         {
             // Return id_tramite
             return _AIHandler.DetermineType(requestDTO);
@@ -85,7 +85,7 @@ namespace TramitesAI.Business.Services.Implementation
             throw new ApiException(ErrorCode.UNKNOWN_ERROR);
         }
 
-        private async void UpdateCase(ResponseDTO responseDTO, int id, string typeID)
+        private async void UpdateCase(ResponseDTO responseDTO, int id, int typeID)
         {
             SolicitudProcesada processedCasesDTO = await _solicitudProcesadaRepositorio.LeerPorId(id);
             {
@@ -116,7 +116,7 @@ namespace TramitesAI.Business.Services.Implementation
             }
         }
 
-        private async Task<int> GuardarSolicitudProcesada(SolicitudDTO solicitudDTO, string tipo, Solicitud solicitud)
+        private async Task<int> GuardarSolicitudProcesada(SolicitudDTO solicitudDTO, int tipo, Solicitud solicitud)
         {
             SolicitudProcesada solicitudProcesada = SolicitudProcesada.Builder()
                     .MsgId(solicitudDTO.MsgId)

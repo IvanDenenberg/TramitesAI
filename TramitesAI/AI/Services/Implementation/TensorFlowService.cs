@@ -11,7 +11,7 @@ namespace TramitesAI.AI.Services.Implementation
             throw new NotImplementedException();
         }
 
-        public string determineType(SolicitudDTO requestDTO)
+        public int determineType(SolicitudDTO requestDTO)
         {
             throw new NotImplementedException();
         }
