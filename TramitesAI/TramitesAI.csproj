@@ -8,34 +8,60 @@
 
   <ItemGroup>
     <Compile Remove="a\**" />
+    <Compile Remove="images\**" />
     <Compile Remove="Orchestrator\**" />
     <Content Remove="a\**" />
+    <Content Remove="images\**" />
     <Content Remove="Orchestrator\**" />
     <EmbeddedResource Remove="a\**" />
+    <EmbeddedResource Remove="images\**" />
     <EmbeddedResource Remove="Orchestrator\**" />
     <None Remove="a\**" />
+    <None Remove="images\**" />
     <None Remove="Orchestrator\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Freeware.Pdf2Png" Version="1.0.1" />
+    <PackageReference Include="libpng-msvc-x64" Version="1.6.33.8807" />
+    <PackageReference Include="libpng-v142" Version="1.6.37.2" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.68.0.3373" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.18" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.18" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.18">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.4" />
+    <PackageReference Include="Tesseract" Version="5.2.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="AI\Domain\Dto\" />
     <Folder Include="AI\Domain\Enums\" />
     <Folder Include="AI\Services\Infrastructure\" />
-    <Folder Include="AI\Services\Interfaces\" />
-    <Folder Include="AI\Services\Implementation\" />
     <Folder Include="Business\Services\Implementation\" />
     <Folder Include="Business\Services\Interfaces\" />
-    <Folder Include="Controllers\" />
     <Folder Include="Repository\Configuration\" />
-    <Folder Include="Business\Domain\Dto\" />
     <Folder Include="Business\Domain\Enums\" />
     <Folder Include="Business\Services\Infrastructure\" />
-    <Folder Include="Repository\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="C:\Users\ivand\.nuget\packages\tesseract\5.2.0\build\\..\x64\leptonica-1.82.0.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="C:\Users\ivand\.nuget\packages\tesseract\5.2.0\build\\..\x64\tesseract50.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="C:\Users\ivand\.nuget\packages\tesseract\5.2.0\build\\..\x86\leptonica-1.82.0.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="C:\Users\ivand\.nuget\packages\tesseract\5.2.0\build\\..\x86\tesseract50.dll" />
   </ItemGroup>
 
 </Project>
