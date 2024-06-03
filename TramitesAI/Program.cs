@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using TramitesAI.AI.Services.Implementation;
-using TramitesAI.AI.Services.Interfaces;
-using TramitesAI.Business.Services.Implementation;
-using TramitesAI.Business.Services.Interfaces;
-using TramitesAI.Repository.Configuration;
-using TramitesAI.Repository.Domain.Dto;
-using TramitesAI.Repository.Implementations;
-using TramitesAI.Repository.Interfaces;
+using TramitesAI.src.AI.Services.Implementation;
+using TramitesAI.src.AI.Services.Interfaces;
+using TramitesAI.src.Business.Services.Implementation;
+using TramitesAI.src.Business.Services.Interfaces;
+using TramitesAI.src.Repository.Configuration;
+using TramitesAI.src.Repository.Domain.Entidades;
+using TramitesAI.src.Repository.Implementations;
+using TramitesAI.src.Repository.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
