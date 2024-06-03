@@ -15,13 +15,13 @@ namespace TramitesAI.AI.Services.Implementation
             _iAIInformationExtractor = iAIInformationExtractor;
         }
 
-        public string DetermineType(RequestDTO requestDTO)
+        public int DetermineType(SolicitudDTO requestDTO)
         {
             return _iAIAnalyzer.determineType(requestDTO);
         }
 
 
-        public AnalyzedInformationDTO ProcessInfo(List<MemoryStream> files, RequestDTO requestDTO)
+        public AnalyzedInformationDTO ProcessInfo(List<MemoryStream> files, SolicitudDTO requestDTO)
         {
             // Extract info from files
             List<ExtractedInfoDTO> infoFromFiles = _iAIInformationExtractor.extractInfoFromFiles(files);

@@ -5,7 +5,7 @@ namespace TramitesAI.AI.Services.Interfaces
 {
     public interface IAIAnalyzer
     {
-        AnalyzedInformationDTO analyzeInformation(List<ExtractedInfoDTO> infoFromFiles, RequestDTO requestDTO);
-        string determineType(RequestDTO requestDTO);
+        AnalyzedInformationDTO analyzeInformation(List<ExtractedInfoDTO> infoFromFiles, SolicitudDTO requestDTO);
+        int determineType(SolicitudDTO requestDTO);
     }
 }
