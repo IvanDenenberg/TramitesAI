@@ -6,8 +6,8 @@ namespace TramitesAI.src.AI.Services.Implementation
 {
     public class AIHandler : IAIHandler
     {
-        private IAIAnalyzer _iAIAnalyzer;
-        private IAIInformationExtractor _iAIInformationExtractor;
+        private readonly IAIAnalyzer _iAIAnalyzer;
+        private readonly IAIInformationExtractor _iAIInformationExtractor;
 
         public AIHandler(IAIAnalyzer iAIAnalyzer, IAIInformationExtractor iAIInformationExtractor)
         {
@@ -15,19 +15,19 @@ namespace TramitesAI.src.AI.Services.Implementation
             _iAIInformationExtractor = iAIInformationExtractor;
         }
 
-        public int DetermineType(SolicitudDTO requestDTO)
+        public int DeterminarTipo(string requestDTO)
         {
-            return _iAIAnalyzer.determineType(requestDTO);
+            return _iAIAnalyzer.DeterminarTipo(requestDTO).Result;
         }
 
 
-        public AnalyzedInformationDTO ProcessInfo(List<MemoryStream> files, SolicitudDTO requestDTO)
+        public InformacionAnalizadaDTO ProcesarInformacion(List<MemoryStream> files, SolicitudDTO requestDTO, int tipo)
         {
             // Extract info from files
-            List<ExtractedInfoDTO> infoFromFiles = _iAIInformationExtractor.extractInfoFromFiles(files);
+            List<InformacionExtraidaDTO> infoFromFiles = _iAIInformationExtractor.extractInfoFromFiles(files);
 
             // Analyze information
-            return _iAIAnalyzer.analyzeInformation(infoFromFiles, requestDTO);
+            return _iAIAnalyzer.AnalizarInformacionAsync(infoFromFiles, requestDTO, tipo).Result;
         }
     }
 }

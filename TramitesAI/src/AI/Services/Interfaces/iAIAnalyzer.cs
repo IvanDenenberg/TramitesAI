@@ -5,7 +5,7 @@ namespace TramitesAI.src.AI.Services.Interfaces
 {
     public interface IAIAnalyzer
     {
-        AnalyzedInformationDTO analyzeInformation(List<ExtractedInfoDTO> infoFromFiles, SolicitudDTO requestDTO);
-        int determineType(SolicitudDTO requestDTO);
+        Task<InformacionAnalizadaDTO> AnalizarInformacionAsync(List<InformacionExtraidaDTO> infoFromFiles, SolicitudDTO requestDTO, int tipo);
+        Task<int> DeterminarTipo(string requestDTO);
     }
 }
