@@ -39,8 +39,8 @@
         [ErrorDetails("config not found", 404)]
         CONFIG_NOT_FOUND = 7,
 
-        [ErrorDetails("error post")]
-        ERROR_POST_REFUND = 8,
+        [ErrorDetails("Http request error", 401)]
+        HTTP_REQUEST_ERROR = 8,
 
         [ErrorDetails("fail executing query")]
         FAIL_EXECUTING_QUERY = 9,
