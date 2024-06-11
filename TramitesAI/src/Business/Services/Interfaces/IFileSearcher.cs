@@ -2,6 +2,6 @@
 {
     public interface IFileSearcher
     {
-        public MemoryStream GetFile(string fileName, string msgId);
+        public MemoryStream ObtenerArchivo(string nombreArchivo, string msgId);
     }
 }

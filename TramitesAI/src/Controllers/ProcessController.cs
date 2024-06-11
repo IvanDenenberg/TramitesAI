@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Text;
 using TramitesAI.src.Business.Domain.Dto;
 using TramitesAI.src.Business.Services.Interfaces;
+using TramitesAI.src.Common.Exceptions;
 
 namespace TramitesAI.src.Controllers
 {
@@ -19,15 +22,31 @@ namespace TramitesAI.src.Controllers
         [HttpPost]
         public async Task<IActionResult> ProcessAsync([FromBody] SolicitudDTO request)
         {
-            ResponseDTO response = await _businessService.ProcessAsync(request);
-            //TODO Change return
-            return Ok(response);
+            try
+            {
+                RespuestaDTO respuesta = await _businessService.ProcessAsync(request);
+
+                var contenido = new
+                {
+                    respuesta = respuesta
+                };
+                var jsonRespuesta = new StringContent(
+                    JsonConvert.SerializeObject(contenido),
+                    Encoding.UTF8,
+                    "application/json"
+                );
+
+                return Ok(jsonRespuesta);
+            } catch (ApiException ex)
+            {
+                return StatusCode(ex.StatusCode, ex.Description);
+            }
         }
 
         [HttpGet("getbyid")]
         public IActionResult GetByMsgId([FromRoute] string id)
         {
-            ResponseDTO response = _businessService.GetById(id);
+            RespuestaDTO response = _businessService.GetById(id);
             //TODO Change return
             return Ok(response);
         }
