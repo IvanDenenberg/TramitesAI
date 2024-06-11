@@ -1,6 +1,7 @@
 ﻿using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
+using System;
 using TramitesAI.src.Business.Services.Interfaces;
 using TramitesAI.src.Common.Exceptions;
 
@@ -9,48 +10,49 @@ namespace TramitesAI.src.Business.Services.Implementation
     public class GoogleDriveSearcherService : IFileSearcher
     {
         public GoogleDriveSearcherService() { }
-        public MemoryStream GetFile(string fileName, string msgId)
+        public MemoryStream ObtenerArchivo(string nombreArchivo, string msgId)
         {
             try
             {
-                // Get JsonApiKey for Google Drive and its validation
+                // Obteniendo la Api Key para utilizar Google Drive y validandola
                 string jsonApiKey = @"./Credentials/tramitesai-366f1be7dfc8.json";
 
                 if (jsonApiKey == null)
                 {
                     throw new ApiException(ErrorCode.MISSING_CONFIG_PROPERTY);
                 }
-                Console.WriteLine("Api key found");
+                Console.WriteLine("Api key encontrada");
 
-                // Connecting to Google Drive
-                GoogleCredential credential = GoogleCredential.FromFile(jsonApiKey)
+                // Conectando a Google Drive
+                GoogleCredential credencial = GoogleCredential.FromFile(jsonApiKey)
                     .CreateScoped(new[] { DriveService.ScopeConstants.Drive });
 
                 DriveService service = new(new BaseClientService.Initializer()
                 {
-                    HttpClientInitializer = credential
+                    HttpClientInitializer = credencial
                 });
 
-                Console.WriteLine("Connected to google drive");
+                Console.WriteLine("Conectado a google drive");
 
-                // Defining target file name
-                string targetFileName = $"{msgId}_{fileName}";
+                // Definiendo el archivo a descargar
+                string nombreArchivoBuscado = $"{msgId}_{nombreArchivo}";
 
-                // Searching by file name to obtain id and then downloading by id
+                // Buscando dentro de Google Drive con el nombre del archivo para encontrar el ID
+                // Una vez obtenido el ID se utiliza este para descargar al archivo
                 FilesResource.ListRequest listRequest = service.Files.List();
-                listRequest.Q = $"name='{targetFileName}'";
+                listRequest.Q = $"name='{nombreArchivoBuscado}'";
 
                 IList<Google.Apis.Drive.v3.Data.File> files = listRequest.Execute().Files;
                 var stream = new MemoryStream();
-                var targetFile = files.FirstOrDefault(file => file.Name == targetFileName);
+                var archivoBuscado = files.FirstOrDefault(file => file.Name == nombreArchivoBuscado);
 
-                if (targetFile != null)
+                if (archivoBuscado != null)
                 {
-                    Console.WriteLine("File found");
-                    var request = service.Files.Get(targetFile.Id);
+                    Console.WriteLine("Archivo Encontrado");
+                    var request = service.Files.Get(archivoBuscado.Id);
                     request.Download(stream);
                     stream.Position = 0;
-                    Console.WriteLine("File downloaded");
+                    Console.WriteLine("Archivo Descargado");
                 }
                 else
                 {
@@ -59,18 +61,15 @@ namespace TramitesAI.src.Business.Services.Implementation
 
                 return stream;
             }
+            catch (ApiException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                throw ex;
+            }
             catch (Exception e)
             {
-                if (e is ApiException exception)
-                {
-                    Console.WriteLine($"Error: {exception.Message}");
-                    throw exception;
-                }
-                else
-                {
-                    Console.WriteLine($"Error: {e.Message}");
-                    throw new ApiException(ErrorCode.ERROR_DOWNLOAD_FILE);
-                }
+                Console.WriteLine($"Error: {e.Message}");
+                throw new ApiException(ErrorCode.ERROR_DOWNLOAD_FILE);
             }
         }
     }

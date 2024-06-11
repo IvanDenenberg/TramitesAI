@@ -1,6 +1,8 @@
-﻿using TramitesAI.src.AI.Domain.Dto;
+﻿using Microsoft.IdentityModel.Tokens;
+using TramitesAI.src.AI.Domain.Dto;
 using TramitesAI.src.AI.Services.Interfaces;
 using TramitesAI.src.Business.Domain.Dto;
+using TramitesAI.src.Repository.Domain.Entidades;
 
 namespace TramitesAI.src.AI.Services.Implementation
 {
@@ -15,19 +17,26 @@ namespace TramitesAI.src.AI.Services.Implementation
             _iAIInformationExtractor = iAIInformationExtractor;
         }
 
-        public int DeterminarTipo(string requestDTO)
+        public async Task<int> DeterminarTramiteAsync(string requestDTO)
         {
-            return _iAIAnalyzer.DeterminarTipo(requestDTO).Result;
+            TramiteDTO asunto = await _iAIAnalyzer.DeterminarTramite(requestDTO);
+
+            return asunto.valor;
         }
 
-
-        public InformacionAnalizadaDTO ProcesarInformacion(List<MemoryStream> files, SolicitudDTO requestDTO, int tipo)
+        public Task<InformacionAnalizadaDTO> ProcesarInformacion(List<MemoryStream> archivos, SolicitudDTO solicitud, Tramite tramite)
         {
-            // Extract info from files
-            List<InformacionExtraidaDTO> infoFromFiles = _iAIInformationExtractor.extractInfoFromFiles(files);
+            List<InformacionExtraidaDTO> textoArchivos = new List<InformacionExtraidaDTO>();
+            if (archivos.IsNullOrEmpty() & archivos.Count() > 0)
+            {
+                // Extract info from files
+                textoArchivos = _iAIInformationExtractor.extractInfoFromFiles(archivos);
+            }
+
 
             // Analyze information
-            return _iAIAnalyzer.AnalizarInformacionAsync(infoFromFiles, requestDTO, tipo).Result;
+            return _iAIAnalyzer.AnalizarInformacionAsync(textoArchivos, solicitud, tramite);
         }
+
     }
 }

@@ -65,6 +65,11 @@ namespace TramitesAI.src.Repository.Domain.Entidades
                 return this;
             }
 
+            public SolicitudProcesadaBuilder SolicitudId(int solicitudId)
+            {
+                dto.SolicitudId = solicitudId;
+                return this;
+            }
 
             public SolicitudProcesadaBuilder Solicitud(Solicitud solicitud)
             {

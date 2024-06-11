@@ -1,9 +1,12 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Net;
 using System.Text;
 using TramitesAI.src.AI.Domain.Dto;
 using TramitesAI.src.AI.Services.Interfaces;
 using TramitesAI.src.Business.Domain.Dto;
 using TramitesAI.src.Common.Exceptions;
+using TramitesAI.src.Repository.Domain.Entidades;
 
 namespace TramitesAI.src.AI.Services.Implementation
 {
@@ -18,40 +21,89 @@ namespace TramitesAI.src.AI.Services.Implementation
             _httpClient.BaseAddress = URL_Python;
         }
 
-        public async Task<InformacionAnalizadaDTO> AnalizarInformacionAsync(List<InformacionExtraidaDTO> infoFromFiles, SolicitudDTO requestDTO, int tipo)
+        public async Task<InformacionAnalizadaDTO> AnalizarInformacionAsync(List<InformacionExtraidaDTO> textoArchivos, SolicitudDTO solicitud, Tramite tramite)
         {
             try
             {
-                // Crear el objeto que se va a enviar en el POST
-                var contenido = new
+                // Definir el objeto contenido fuera del switch
+                object contenido = null;
+                string pythonEndpoint;
+
+                // Se define el contenido y el endpoint en base al tramite
+                switch (tramite.Nombre)
                 {
-                    InformacionDeArchivos = infoFromFiles,
-                    Request = requestDTO
-                };
+                    case "Denuncia Siniestro":
+                        pythonEndpoint = "/denuncia_siniestro";
+                        contenido = new
+                        {
+                            textos = textoArchivos
+                        };
+                        break;
+                    case "Cotizar Poliza Auto":
+                        pythonEndpoint = "/poliza_auto";
+                        contenido = new
+                        {
+                            textos = new List<string> { solicitud.Message }
+                        };
+                        break;
+                    case "Carga Presupuestos":
+                        pythonEndpoint = "/carga_presupuesto";
+                        contenido = new
+                        {
+                            textos = textoArchivos
+                        };
+                        break;
+                    case "Cotizar Poliza Hogar":
+                        pythonEndpoint = "/poliza_hogar";
+                        contenido = new
+                        {
+                            textos = new List<string> { solicitud.Message }
+                        };
+                        break;
+                    default:
+                        throw new ApiException(ErrorCode.UNKNOWN_ERROR);
+                }
 
                 // Serializar el objeto a JSON
-                var jsonContent = new StringContent(
+                var jsonContenido = new StringContent(
                     JsonConvert.SerializeObject(contenido),
                     Encoding.UTF8,
                     "application/json"
                 );
 
                 // Hacer la solicitud POST al endpoint /analyze
-                HttpResponseMessage response = await _httpClient.PostAsync("/analyze", jsonContent);
-                response.EnsureSuccessStatusCode();
+                HttpResponseMessage respuesta = await _httpClient.PostAsync(pythonEndpoint, jsonContenido);
+                if (respuesta.StatusCode.Equals(HttpStatusCode.NotImplemented))
+                {
+                    throw new ApiException(ErrorCode.MODEL_NOT_IMPLEMENTED);
+                }
+
+                respuesta.EnsureSuccessStatusCode();
 
                 // Leer el contenido de la respuesta como una cadena
-                string responseBody = await response.Content.ReadAsStringAsync();
+                string cuerpoRespuesta = await respuesta.Content.ReadAsStringAsync();
 
-                // Deserializar la respuesta a un objeto AnalyzedInformationDTO
-                var analyzedInformation = JsonConvert.DeserializeObject<InformacionAnalizadaDTO>(responseBody);
+                // Deserializar solo el campo "resultados" de la respuesta
+                JObject jsonResponse = JObject.Parse(cuerpoRespuesta);
+                JToken resultadosToken = jsonResponse["resultados"];
 
-                return analyzedInformation;
+                if (resultadosToken == null)
+                {
+                    throw new ApiException(ErrorCode.INVALID_JSON);
+                }
+
+                // Deserializar el token de "resultados" a una lista de objetos Resultado
+                return resultadosToken[0].ToObject<InformacionAnalizadaDTO>();
             }
             
             catch (Exception e)
             {
-                if (e is HttpRequestException)
+                Console.WriteLine("Error deserializando el JSON: " + e.Message);
+                if (e is ApiException)
+                {
+                    throw;
+                } 
+                else if (e is HttpRequestException)
                 {
                     throw new ApiException(ErrorCode.HTTP_REQUEST_ERROR);
                 } else
@@ -61,7 +113,7 @@ namespace TramitesAI.src.AI.Services.Implementation
             }
         }
 
-        public async Task<int> DeterminarTipo(string asunto)
+        public async Task<TramiteDTO> DeterminarTramite(string asunto)
         {
             try
             {
@@ -78,15 +130,24 @@ namespace TramitesAI.src.AI.Services.Implementation
                     "application/json"
                 );
 
-                // Hacer la solicitud GET al endpoint /ping
-                HttpResponseMessage response = await _httpClient.PostAsync("/determinarTipo", jsonContenido);
-                response.EnsureSuccessStatusCode();
+                // Hacer la solicitud 
+                HttpResponseMessage respuesta = await _httpClient.PostAsync("/evaluar_asunto", jsonContenido);
+                respuesta.EnsureSuccessStatusCode();
 
                 // Leer el contenido de la respuesta como una cadena
-                string responseBody = await response.Content.ReadAsStringAsync();
+                string cuerpoRespuesta = await respuesta.Content.ReadAsStringAsync();
 
-                return 1;
+                // Deserializar solo el campo "resultados" de la respuesta
+                JObject jsonResponse = JObject.Parse(cuerpoRespuesta);
+                JToken resultadosToken = jsonResponse["resultados"];
 
+                if (resultadosToken == null)
+                {
+                    throw new ApiException(ErrorCode.INVALID_JSON);
+                }
+
+                // Deserializar el token de "resultados" a una lista de objetos AsuntoDTO
+                return new TramiteDTO((int) resultadosToken[0]);
             }
             catch (Exception e)
             {
