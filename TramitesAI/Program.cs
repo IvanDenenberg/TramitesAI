@@ -32,9 +32,7 @@ connectionString += server;
 Console.WriteLine(connectionString);
 
 builder.Services.AddDbContext<ConfigDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString(connectionString))
-    .EnableSensitiveDataLogging()
-    .LogTo(Console.WriteLine, LogLevel.Information),
+    options.UseSqlServer(builder.Configuration.GetConnectionString(connectionString)),
     ServiceLifetime.Singleton);
 
 // Repositories config

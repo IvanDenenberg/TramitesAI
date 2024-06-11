@@ -57,8 +57,8 @@
         [ErrorDetails("Method not implemented", 400)]
         NOT_IMPLEMENTED = 13,
 
-        [ErrorDetails("invalid institution", 400)]
-        INVALID_INSTITUTION = 14,
+        [ErrorDetails("invalid subject", 400)]
+        INVALID_SUBJECT = 14,
 
         [ErrorDetails("fail inserting in DB", 500)]
         FAIL_INSERT_DB = 15,
@@ -102,8 +102,8 @@
         [ErrorDetails("fail parse to json", 400)]
         FAIL_PARSE_TO_JSON = 28,
 
-        [ErrorDetails("service unavailable", 503)]
-        SERVICE_UNAVAILABLE = 29,
+        [ErrorDetails("model not implemented", 400)]
+        MODEL_NOT_IMPLEMENTED = 29,
 
         [ErrorDetails("Error download zip file from Url", 500)]
         ERROR_DOWNLOAD_FILE = 30,

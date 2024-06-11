@@ -28,7 +28,8 @@ namespace TramitesAI.src.Repository.Implementations
         public async Task<int> Crear(Solicitud solicitud)
         {
             _context.Solicitudes.Add(solicitud);
-            return await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+            return solicitud.Id;
         }
 
         public async Task<Solicitud> LeerPorId(int id)

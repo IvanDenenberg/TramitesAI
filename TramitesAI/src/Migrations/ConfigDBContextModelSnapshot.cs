@@ -22,7 +22,7 @@ namespace TramitesAI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("TramitesAI.Repository.Domain.Dto.Archivo", b =>
+            modelBuilder.Entity("TramitesAI.src.Repository.Domain.Entidades.Archivo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -40,9 +40,23 @@ namespace TramitesAI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Archivos");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Nombre = "Denuncia Policial",
+                            Obligatorio = false
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Nombre = "Carga Presupuestos",
+                            Obligatorio = false
+                        });
                 });
 
-            modelBuilder.Entity("TramitesAI.Repository.Domain.Dto.Dato", b =>
+            modelBuilder.Entity("TramitesAI.src.Repository.Domain.Entidades.Dato", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -57,9 +71,106 @@ namespace TramitesAI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Datos");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Nombre = "Marca"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Nombre = "Modelo"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Nombre = "Año"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Nombre = "Cod_Post"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Nombre = "Numero_siniestro"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Nombre = "Tipo_inmueble"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Nombre = "Direccion"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Nombre = "cod_Post"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Nombre = "Superficie"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Nombre = "Rejas"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Nombre = "fecha_siniestro"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Nombre = "Denunciante"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Nombre = "Motivo"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Nombre = "Ubicación"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Nombre = "Comentarios"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Nombre = "fecha_presupuesto"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            Nombre = "Total_presupuesto"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Nombre = "items_presupuesto"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            Nombre = "Comentarios"
+                        });
                 });
 
-            modelBuilder.Entity("TramitesAI.Repository.Domain.Dto.Respuesta", b =>
+            modelBuilder.Entity("TramitesAI.src.Repository.Domain.Entidades.Respuesta", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -76,7 +187,7 @@ namespace TramitesAI.Migrations
                     b.ToTable("Respuestas");
                 });
 
-            modelBuilder.Entity("TramitesAI.Repository.Domain.Dto.Solicitud", b =>
+            modelBuilder.Entity("TramitesAI.src.Repository.Domain.Entidades.Solicitud", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -93,7 +204,7 @@ namespace TramitesAI.Migrations
                     b.ToTable("Solicitudes");
                 });
 
-            modelBuilder.Entity("TramitesAI.Repository.Domain.Dto.SolicitudProcesada", b =>
+            modelBuilder.Entity("TramitesAI.src.Repository.Domain.Entidades.SolicitudProcesada", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -137,7 +248,7 @@ namespace TramitesAI.Migrations
                     b.ToTable("SolicitudesProcesadas");
                 });
 
-            modelBuilder.Entity("TramitesAI.Repository.Domain.Dto.Tramite", b =>
+            modelBuilder.Entity("TramitesAI.src.Repository.Domain.Entidades.Tramite", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -152,9 +263,31 @@ namespace TramitesAI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tramites");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Nombre = "Denuncia Siniestro"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Nombre = "Cotizar Poliza Auto"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Nombre = "Carga Presupuestos"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Nombre = "Cotizar Poliza Hogar"
+                        });
                 });
 
-            modelBuilder.Entity("TramitesAI.Repository.Domain.Dto.TramiteArchivo", b =>
+            modelBuilder.Entity("TramitesAI.src.Repository.Domain.Entidades.TramiteArchivo", b =>
                 {
                     b.Property<int>("TramiteId")
                         .HasColumnType("int");
@@ -167,9 +300,21 @@ namespace TramitesAI.Migrations
                     b.HasIndex("ArchivoId");
 
                     b.ToTable("TramiteArchivos");
+
+                    b.HasData(
+                        new
+                        {
+                            TramiteId = 1,
+                            ArchivoId = 1
+                        },
+                        new
+                        {
+                            TramiteId = 3,
+                            ArchivoId = 2
+                        });
                 });
 
-            modelBuilder.Entity("TramitesAI.Repository.Domain.Dto.TramiteDato", b =>
+            modelBuilder.Entity("TramitesAI.src.Repository.Domain.Entidades.TramiteDato", b =>
                 {
                     b.Property<int>("TramiteId")
                         .HasColumnType("int");
@@ -182,15 +327,112 @@ namespace TramitesAI.Migrations
                     b.HasIndex("DatoId");
 
                     b.ToTable("TramiteDatos");
+
+                    b.HasData(
+                        new
+                        {
+                            TramiteId = 2,
+                            DatoId = 1
+                        },
+                        new
+                        {
+                            TramiteId = 2,
+                            DatoId = 2
+                        },
+                        new
+                        {
+                            TramiteId = 2,
+                            DatoId = 3
+                        },
+                        new
+                        {
+                            TramiteId = 2,
+                            DatoId = 4
+                        },
+                        new
+                        {
+                            TramiteId = 4,
+                            DatoId = 6
+                        },
+                        new
+                        {
+                            TramiteId = 4,
+                            DatoId = 7
+                        },
+                        new
+                        {
+                            TramiteId = 4,
+                            DatoId = 8
+                        },
+                        new
+                        {
+                            TramiteId = 4,
+                            DatoId = 9
+                        },
+                        new
+                        {
+                            TramiteId = 4,
+                            DatoId = 10
+                        },
+                        new
+                        {
+                            TramiteId = 1,
+                            DatoId = 11
+                        },
+                        new
+                        {
+                            TramiteId = 1,
+                            DatoId = 12
+                        },
+                        new
+                        {
+                            TramiteId = 1,
+                            DatoId = 13
+                        },
+                        new
+                        {
+                            TramiteId = 1,
+                            DatoId = 14
+                        },
+                        new
+                        {
+                            TramiteId = 1,
+                            DatoId = 15
+                        },
+                        new
+                        {
+                            TramiteId = 3,
+                            DatoId = 16
+                        },
+                        new
+                        {
+                            TramiteId = 3,
+                            DatoId = 17
+                        },
+                        new
+                        {
+                            TramiteId = 3,
+                            DatoId = 18
+                        },
+                        new
+                        {
+                            TramiteId = 3,
+                            DatoId = 19
+                        },
+                        new
+                        {
+                            TramiteId = 3,
+                            DatoId = 5
+                        });
                 });
 
-            modelBuilder.Entity("TramitesAI.Repository.Domain.Dto.SolicitudProcesada", b =>
+            modelBuilder.Entity("TramitesAI.src.Repository.Domain.Entidades.SolicitudProcesada", b =>
                 {
-                    b.HasOne("TramitesAI.Repository.Domain.Dto.Respuesta", "Respuesta")
+                    b.HasOne("TramitesAI.src.Repository.Domain.Entidades.Respuesta", "Respuesta")
                         .WithMany()
                         .HasForeignKey("RespuestaId");
 
-                    b.HasOne("TramitesAI.Repository.Domain.Dto.Solicitud", "Solicitud")
+                    b.HasOne("TramitesAI.src.Repository.Domain.Entidades.Solicitud", "Solicitud")
                         .WithMany()
                         .HasForeignKey("SolicitudId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -201,15 +443,15 @@ namespace TramitesAI.Migrations
                     b.Navigation("Solicitud");
                 });
 
-            modelBuilder.Entity("TramitesAI.Repository.Domain.Dto.TramiteArchivo", b =>
+            modelBuilder.Entity("TramitesAI.src.Repository.Domain.Entidades.TramiteArchivo", b =>
                 {
-                    b.HasOne("TramitesAI.Repository.Domain.Dto.Archivo", "Archivo")
+                    b.HasOne("TramitesAI.src.Repository.Domain.Entidades.Archivo", "Archivo")
                         .WithMany("TramiteArchivos")
                         .HasForeignKey("ArchivoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TramitesAI.Repository.Domain.Dto.Tramite", "Tramite")
+                    b.HasOne("TramitesAI.src.Repository.Domain.Entidades.Tramite", "Tramite")
                         .WithMany("TramiteArchivos")
                         .HasForeignKey("TramiteId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -220,15 +462,15 @@ namespace TramitesAI.Migrations
                     b.Navigation("Tramite");
                 });
 
-            modelBuilder.Entity("TramitesAI.Repository.Domain.Dto.TramiteDato", b =>
+            modelBuilder.Entity("TramitesAI.src.Repository.Domain.Entidades.TramiteDato", b =>
                 {
-                    b.HasOne("TramitesAI.Repository.Domain.Dto.Dato", "Dato")
+                    b.HasOne("TramitesAI.src.Repository.Domain.Entidades.Dato", "Dato")
                         .WithMany("TramiteDatos")
                         .HasForeignKey("DatoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TramitesAI.Repository.Domain.Dto.Tramite", "Tramite")
+                    b.HasOne("TramitesAI.src.Repository.Domain.Entidades.Tramite", "Tramite")
                         .WithMany("TramiteDatos")
                         .HasForeignKey("TramiteId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -239,17 +481,17 @@ namespace TramitesAI.Migrations
                     b.Navigation("Tramite");
                 });
 
-            modelBuilder.Entity("TramitesAI.Repository.Domain.Dto.Archivo", b =>
+            modelBuilder.Entity("TramitesAI.src.Repository.Domain.Entidades.Archivo", b =>
                 {
                     b.Navigation("TramiteArchivos");
                 });
 
-            modelBuilder.Entity("TramitesAI.Repository.Domain.Dto.Dato", b =>
+            modelBuilder.Entity("TramitesAI.src.Repository.Domain.Entidades.Dato", b =>
                 {
                     b.Navigation("TramiteDatos");
                 });
 
-            modelBuilder.Entity("TramitesAI.Repository.Domain.Dto.Tramite", b =>
+            modelBuilder.Entity("TramitesAI.src.Repository.Domain.Entidades.Tramite", b =>
                 {
                     b.Navigation("TramiteArchivos");
 

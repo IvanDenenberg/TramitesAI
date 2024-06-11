@@ -82,7 +82,7 @@ namespace TramitesAI.src.Controllers
                 return BadRequest("Not all query params sent");
             }
             string content = "Default text";
-            MemoryStream file = _fileSearcher.GetFile(fileName, msgId);
+            MemoryStream file = _fileSearcher.ObtenerArchivo(fileName, msgId);
 
             if (file.CanRead)
             {
@@ -115,7 +115,7 @@ namespace TramitesAI.src.Controllers
                 return BadRequest("Not all required parameters are provided");
             }
 
-            MemoryStream file = _fileSearcher.GetFile(request.FileName, request.MsgId);
+            MemoryStream file = _fileSearcher.ObtenerArchivo(request.FileName, request.MsgId);
             List<MemoryStream> data = new();
             data.Add(file);
 
