@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
 using System.Text.Json;
 using TramitesAI.src.AI.Domain.Dto;
 using TramitesAI.src.AI.Services.Interfaces;
@@ -17,13 +18,15 @@ namespace TramitesAI.src.Controllers
         private readonly IFileSearcher _fileSearcher;
         private readonly IRepositorio<Solicitud> _repositorioSolicitud;
         private readonly IRepositorio<SolicitudProcesada> _repositorioSolicitudProcesada;
+        private readonly HttpClient _httpClient;
 
-        public TestController(IAIInformationExtractor informationExtractor, IFileSearcher fileSearcher, IRepositorio<Solicitud> repositorioSolicitud, IRepositorio<SolicitudProcesada> repositorioSolicitudProcesada)
+        public TestController(IAIInformationExtractor informationExtractor, IFileSearcher fileSearcher, IRepositorio<Solicitud> repositorioSolicitud, IRepositorio<SolicitudProcesada> repositorioSolicitudProcesada, HttpClient httpClient)
         {
             _informationExtractor = informationExtractor;
             _fileSearcher = fileSearcher;
             _repositorioSolicitud = repositorioSolicitud;
             _repositorioSolicitudProcesada = repositorioSolicitudProcesada;
+            _httpClient = httpClient;
         }
 
         // Endpoint to test Extract Info from a Local File
@@ -50,10 +53,10 @@ namespace TramitesAI.src.Controllers
                     };
 
                     // Extracting info
-                    List<ExtractedInfoDTO> result = _informationExtractor.extractInfoFromFiles(memoryStreams);
+                    List<InformacionExtraidaDTO> result = _informationExtractor.extractInfoFromFiles(memoryStreams);
                     string response = "";
 
-                    foreach (ExtractedInfoDTO resultDTO in result)
+                    foreach (InformacionExtraidaDTO resultDTO in result)
                     {
                         Console.WriteLine(resultDTO.Confidence);
                         Console.WriteLine(resultDTO.Text);
@@ -117,10 +120,10 @@ namespace TramitesAI.src.Controllers
             data.Add(file);
 
             // Extract info
-            List<ExtractedInfoDTO> result = _informationExtractor.extractInfoFromFiles(data);
+            List<InformacionExtraidaDTO> result = _informationExtractor.extractInfoFromFiles(data);
             string response = "";
 
-            foreach (ExtractedInfoDTO resultDTO in result)
+            foreach (InformacionExtraidaDTO resultDTO in result)
             {
                 Console.WriteLine("Confidence: " + resultDTO.Confidence * 100 + "%");
                 Console.WriteLine("Text: " + resultDTO.Text);
@@ -150,7 +153,7 @@ namespace TramitesAI.src.Controllers
                 // Devuelve un resultado 201 (Created) con la entidad creada
                 return Created($"api/crear-solicitud/{solicitudAGuardar.Id}", solicitudAGuardar);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Manejo de errores (log, retorno de un mensaje de error, etc.)
                 return StatusCode(500, "Ocurrió un error al crear la solicitud.");
@@ -204,6 +207,32 @@ namespace TramitesAI.src.Controllers
         {
             SolicitudProcesada solicitud = await _repositorioSolicitudProcesada.LeerPorId(id);
             return Ok(solicitud);
+        }
+
+        // Endpoint para probar la interaccion entre esta API y la API de Python
+        [HttpGet("python-ping")]
+        public async Task<IActionResult> PythonPing()
+        {
+            // Establecer la dirección base de la API externa
+            _httpClient.BaseAddress = new Uri("http://127.0.0.1:5000");
+
+            try
+            {
+                // Hacer la solicitud GET al endpoint /ping
+                HttpResponseMessage response = await _httpClient.GetAsync("/ping");
+                response.EnsureSuccessStatusCode();
+
+                // Leer el contenido de la respuesta como una cadena
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                // Retornar la respuesta al cliente
+                return Ok(responseBody);
+            }
+            catch (HttpRequestException e)
+            {
+                // Manejar posibles errores de solicitud
+                return StatusCode(500, $"Error en la solicitud: {e.Message}");
+            }
         }
     }
 }

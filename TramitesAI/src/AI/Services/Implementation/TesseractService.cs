@@ -10,15 +10,15 @@ namespace TramitesAI.src.AI.Services.Implementation
 {
     public class TesseractService : IAIInformationExtractor
     {
-        public List<ExtractedInfoDTO> extractInfoFromFiles(List<MemoryStream> files)
+        public List<InformacionExtraidaDTO> extractInfoFromFiles(List<MemoryStream> files)
         {
-            List<ExtractedInfoDTO> list = new List<ExtractedInfoDTO>();
+            List<InformacionExtraidaDTO> list = new List<InformacionExtraidaDTO>();
 
             foreach (MemoryStream file in files)
             {
                 int position = 1;
                 Console.WriteLine("Extracting info from file " + position + " of " + files.Count);
-                ExtractedInfoDTO extractedInfo = extractInfoFromFile(file);
+                InformacionExtraidaDTO extractedInfo = extractInfoFromFile(file);
                 list.Add(extractedInfo);
                 position++;
             }
@@ -26,7 +26,7 @@ namespace TramitesAI.src.AI.Services.Implementation
 
         }
 
-        public ExtractedInfoDTO extractInfoFromFile(MemoryStream file)
+        public InformacionExtraidaDTO extractInfoFromFile(MemoryStream file)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace TramitesAI.src.AI.Services.Implementation
                 using (var engine = new TesseractEngine(@"./Tesseract/tessdata", "spa", EngineMode.Default))
                 {
                     List<byte[]> imageData;
-                    List<ExtractedInfoDTO> parcialResult = new List<ExtractedInfoDTO>();
+                    List<InformacionExtraidaDTO> parcialResult = new List<InformacionExtraidaDTO>();
 
                     if (IsPDF(file))
                     {
@@ -55,7 +55,7 @@ namespace TramitesAI.src.AI.Services.Implementation
                         {
                             using (var page = engine.Process(img))
                             {
-                                ExtractedInfoDTO result = GetInformation(page);
+                                InformacionExtraidaDTO result = GetInformation(page);
                                 parcialResult.Add(result);
                             }
                         }
@@ -74,21 +74,21 @@ namespace TramitesAI.src.AI.Services.Implementation
 
 
         //Create and return the ExtractedInfoDTO object with the processed data.
-        private ExtractedInfoDTO CreateFinalResult(List<ExtractedInfoDTO> parcialResult)
+        private InformacionExtraidaDTO CreateFinalResult(List<InformacionExtraidaDTO> parcialResult)
         {
             float meanConfidence = 0;
             int elementCount = parcialResult.Count;
 
             StringBuilder text = new StringBuilder();
 
-            foreach (ExtractedInfoDTO result in parcialResult)
+            foreach (InformacionExtraidaDTO result in parcialResult)
             {
                 meanConfidence += result.Confidence;
                 text.Append(result.Text);
             }
 
             Console.WriteLine("ExtractedInfoDTO created");
-            return ExtractedInfoDTO.Builder()
+            return InformacionExtraidaDTO.Builder()
                 .Confidence(meanConfidence / elementCount)
                 .Text(text.ToString())
                 .Build();
@@ -124,9 +124,9 @@ namespace TramitesAI.src.AI.Services.Implementation
 
 
         // GetInformation is a method that once the information is extracted by tesseract gets the confidence and the text of each analysis
-        static ExtractedInfoDTO GetInformation(Page page)
+        static InformacionExtraidaDTO GetInformation(Page page)
         {
-            ExtractedInfoDTO infoDTO = new ExtractedInfoDTO();
+            InformacionExtraidaDTO infoDTO = new InformacionExtraidaDTO();
             var text = page.GetText();
             bool hasLetters = text.Any(char.IsLetter);
             if (hasLetters)

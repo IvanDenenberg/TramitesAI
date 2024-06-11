@@ -1,11 +1,12 @@
 ﻿using TramitesAI.src.AI.Domain.Dto;
 using TramitesAI.src.Business.Domain.Dto;
+using TramitesAI.src.Repository.Domain.Entidades;
 
 namespace TramitesAI.src.AI.Services.Interfaces
 {
     public interface IAIHandler
     {
-        int DetermineType(SolicitudDTO requestDTO);
-        AnalyzedInformationDTO ProcessInfo(List<MemoryStream> files, SolicitudDTO requestDTO);
+        Task<int> DeterminarTramiteAsync(string asunto);
+        Task<InformacionAnalizadaDTO> ProcesarInformacion(List<MemoryStream> files, SolicitudDTO requestDTO, Tramite tipo);
     }
 }

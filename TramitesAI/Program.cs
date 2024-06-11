@@ -13,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 //builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
@@ -21,7 +22,7 @@ builder.Services.AddControllers();
 builder.Services.AddSingleton<IBusinessService, BusinessService>();
 builder.Services.AddSingleton<IAIHandler, AIHandler>();
 builder.Services.AddSingleton<IAIInformationExtractor, TesseractService>();
-builder.Services.AddSingleton<IAIAnalyzer, TensorFlowService>();
+builder.Services.AddSingleton<IAIAnalyzer, ProcesadorPython>();
 builder.Services.AddSingleton<IFileSearcher, GoogleDriveSearcherService>();
 
 // Database config
@@ -43,6 +44,7 @@ builder.Services.AddSingleton<IRepositorio<Respuesta>, RespuestaRepositorio>();
 builder.Services.AddSingleton<IRepositorio<SolicitudProcesada>, SolicitudProcesadaRepositorio>();
 builder.Services.AddSingleton<IRepositorio<Solicitud>, SolicitudRepositorio>();
 builder.Services.AddSingleton<IRepositorio<Tramite>, TramiteRepositorio>();
+
 
 var app = builder.Build();
 
