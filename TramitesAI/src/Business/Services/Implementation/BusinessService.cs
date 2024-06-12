@@ -80,6 +80,9 @@ namespace TramitesAI.src.Business.Services.Implementation
                 if (ex.Code.Equals(ErrorCode.INVALID_SUBJECT.ToString()))
                 {
                     return GenerarRespuestaTramiteInvalido();
+                } else if (ex.Code.Equals(ErrorCode.MODEL_NOT_IMPLEMENTED.ToString()))
+                {
+                    return GenerarRespuestaModeloNoImplementado();
                 } else
                 {
                     throw ex;
@@ -89,6 +92,13 @@ namespace TramitesAI.src.Business.Services.Implementation
             {
                 throw new ApiException(ErrorCode.INTERNAL_SERVER_ERROR);
             }
+        }
+
+        private RespuestaDTO GenerarRespuestaModeloNoImplementado()
+        {
+            return RespuestaDTO.Builder()
+                .Mensaje("El modelo para el tramite aun no fue implementado")
+                .Build();
         }
 
         private async Task<Respuesta> GuardarRespuestaAsync(RespuestaDTO respuestaDTO)

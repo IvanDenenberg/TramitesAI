@@ -26,17 +26,7 @@ namespace TramitesAI.src.Controllers
             {
                 RespuestaDTO respuesta = await _businessService.ProcessAsync(request);
 
-                var contenido = new
-                {
-                    respuesta = respuesta
-                };
-                var jsonRespuesta = new StringContent(
-                    JsonConvert.SerializeObject(contenido),
-                    Encoding.UTF8,
-                    "application/json"
-                );
-
-                return Ok(jsonRespuesta);
+                return Ok(respuesta);
             } catch (ApiException ex)
             {
                 return StatusCode(ex.StatusCode, ex.Description);

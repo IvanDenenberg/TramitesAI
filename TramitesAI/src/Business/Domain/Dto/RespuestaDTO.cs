@@ -1,10 +1,12 @@
-﻿using TramitesAI.src.Repository.Domain.Entidades;
+﻿using Newtonsoft.Json;
+using TramitesAI.src.Repository.Domain.Entidades;
 
 namespace TramitesAI.src.Business.Domain.Dto
 {
     public class RespuestaDTO
     {
         public string mensaje { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public bool valido { get; set; }
         public Dictionary<string, object> datosEncontrados {  get; set; }
         public List<string> datosFaltantes { get; set; }
