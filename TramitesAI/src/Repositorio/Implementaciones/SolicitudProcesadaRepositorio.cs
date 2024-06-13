@@ -19,7 +19,7 @@ namespace TramitesAI.src.Repository.Implementations
             var solicitud = await _context.SolicitudesProcesadas.FindAsync(id);
             if (solicitud == null)
             {
-                throw new ApiException(ErrorCode.DELETE_KEY_NOT_FOUND);
+                throw new ApiException(ErrorCode.ERROR_AL_BORRAR);
             }
             _context.SolicitudesProcesadas.Remove(solicitud);
             await _context.SaveChangesAsync();

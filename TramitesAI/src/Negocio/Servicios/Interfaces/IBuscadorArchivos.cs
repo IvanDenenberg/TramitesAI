@@ -1,6 +1,6 @@
 ﻿namespace TramitesAI.src.Business.Services.Interfaces
 {
-    public interface IFileSearcher
+    public interface IBuscadorArchivos
 
 
     {

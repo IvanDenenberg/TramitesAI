@@ -12,11 +12,11 @@ namespace TramitesAI.src.Controllers
     [ApiController]
     public class ProcesarController : ControllerBase
     {
-        private readonly IServicioNegocio _businessService;
+        private readonly IServicioNegocio _servicioNegocio;
 
         public ProcesarController(IServicioNegocio businessService)
         {
-            _businessService = businessService;
+            _servicioNegocio = businessService;
         }
 
         [HttpPost]
@@ -29,7 +29,7 @@ namespace TramitesAI.src.Controllers
         {
             try
             {
-                RespuestaDTO respuesta = await _businessService.ProcesarAsync(request);
+                RespuestaDTO respuesta = await _servicioNegocio.ProcesarAsync(request);
 
                 return Ok(respuesta);
             } catch (ApiException ex)
@@ -47,7 +47,7 @@ namespace TramitesAI.src.Controllers
         {
             try
             {
-                SolicitudProcesada respuesta = await _businessService.LeerPorId(id);
+                SolicitudProcesada respuesta = await _servicioNegocio.LeerPorId(id);
 
                 return Ok(respuesta);
 
@@ -65,7 +65,7 @@ namespace TramitesAI.src.Controllers
         {
             try
             {
-                IEnumerable<SolicitudProcesada> respuesta = await _businessService.LeerTodasSolicitudesProcesadasAsync();
+                IEnumerable<SolicitudProcesada> respuesta = await _servicioNegocio.LeerTodasSolicitudesProcesadasAsync();
 
                 return Ok(respuesta);
 

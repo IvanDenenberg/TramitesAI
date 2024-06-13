@@ -18,7 +18,7 @@ namespace TramitesAI.src.Repository.Implementations
             var tramite = await _context.Tramites.FindAsync(id);
             if (tramite == null)
             {
-                throw new ApiException(ErrorCode.DELETE_KEY_NOT_FOUND);
+                throw new ApiException(ErrorCode.ERROR_AL_BORRAR);
             }
             _context.Tramites.Remove(tramite);
             await _context.SaveChangesAsync();

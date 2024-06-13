@@ -10,16 +10,16 @@ using TramitesAI.src.Repository.Interfaces;
 
 namespace TramitesAI.src.Business.Services.Implementation
 {
-    public class BusinessService : IBusinessService
+    public class BusinessService : IServicioNegocio
     {
         private readonly IRepositorio<SolicitudProcesada> _solicitudProcesadaRepositorio;
         private readonly IAIHandler _AIHandler;
-        private readonly IFileSearcher _fileSearcher;
+        private readonly IBuscadorArchivos _fileSearcher;
         private readonly IRepositorio<Solicitud> _solicitudRepositorio;
         private readonly IRepositorio<Tramite> _tramiteRepositorio;
         private readonly IRepositorio<Respuesta> _respuestaRepositorio;
 
-        public BusinessService(IRepositorio<SolicitudProcesada> solicitudProcesadaRepositorio, IAIHandler aIHandler, IFileSearcher fileSearcher, IRepositorio<Solicitud> solicitudRepositorio, IRepositorio<Tramite> tramiteRepositorio, IRepositorio<Respuesta> respuestaRepositorio)
+        public BusinessService(IRepositorio<SolicitudProcesada> solicitudProcesadaRepositorio, IAIHandler aIHandler, IBuscadorArchivos fileSearcher, IRepositorio<Solicitud> solicitudRepositorio, IRepositorio<Tramite> tramiteRepositorio, IRepositorio<Respuesta> respuestaRepositorio)
         {
             _solicitudProcesadaRepositorio = solicitudProcesadaRepositorio;
             _AIHandler = aIHandler;

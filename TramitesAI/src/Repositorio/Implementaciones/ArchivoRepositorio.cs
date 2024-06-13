@@ -18,7 +18,7 @@ namespace TramitesAI.src.Repository.Implementations
             var archivo = await _context.Archivos.FindAsync(id);
             if (archivo == null)
             {
-                throw new ApiException(ErrorCode.DELETE_KEY_NOT_FOUND);
+                throw new ApiException(ErrorCode.ERROR_AL_BORRAR);
             }
             _context.Archivos.Remove(archivo);
             await _context.SaveChangesAsync();

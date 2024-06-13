@@ -48,7 +48,13 @@
         ERROR_DESCARGANDO_ARCHIVO = 10,
 
         [DetallesError("Propiedad de condifuracion no encontrada", 500)]
-        PROPIEDAD_DE_CONFIGURACION_FALTANTE = 11
+        PROPIEDAD_DE_CONFIGURACION_FALTANTE = 11,
+
+        [DetallesError("Error ejecutando HTTP request", 400)]
+        HTTP_REQUEST_ERROR = 12,
+
+        [DetallesError("Error borrando registro de la base de datos", 400)]
+        ERROR_AL_BORRAR = 13,
     }
 }
 
