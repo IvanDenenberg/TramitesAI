@@ -8,7 +8,7 @@ namespace TramitesAI.src.Repository.Domain.Entidades
         public int Id { get; set; }
         public string MensajeRespuesta { get; set; }
 
-        private Respuesta() { }
+        public Respuesta() { }
 
         public static RespuestaBuilder Builder()
         {

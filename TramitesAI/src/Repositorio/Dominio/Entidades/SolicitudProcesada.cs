@@ -17,7 +17,7 @@ namespace TramitesAI.src.Repository.Domain.Entidades
         public int? RespuestaId { get; set; }
         public Respuesta? Respuesta { get; set; }
 
-        private SolicitudProcesada() { }
+        public SolicitudProcesada() { }
 
         public static SolicitudProcesadaBuilder Builder()
         {

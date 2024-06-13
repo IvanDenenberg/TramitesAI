@@ -8,7 +8,7 @@ namespace TramitesAI.src.Repository.Domain.Entidades
         public int Id { get; set; }
         public string MensajeSolicitud { get; set; }
 
-        private Solicitud() { }
+        public Solicitud() { }
 
         public static SolicitudBuilder Builder()
         {
