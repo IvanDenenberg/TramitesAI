@@ -1,33 +1,44 @@
-﻿using TramitesAI.src.AI.Domain.Dto;
+﻿using Microsoft.IdentityModel.Tokens;
+using TramitesAI.src.AI.Domain.Dto;
 using TramitesAI.src.AI.Services.Interfaces;
 using TramitesAI.src.Business.Domain.Dto;
+using TramitesAI.src.Repository.Domain.Entidades;
 
 namespace TramitesAI.src.AI.Services.Implementation
 {
     public class AIHandler : IAIHandler
     {
-        private IAIAnalyzer _iAIAnalyzer;
-        private IAIInformationExtractor _iAIInformationExtractor;
+        private readonly IAnalizadorAI _iAnalizadorAI;
+        private readonly IExtractorInformacion _iExtractorInformacion;
 
-        public AIHandler(IAIAnalyzer iAIAnalyzer, IAIInformationExtractor iAIInformationExtractor)
+        public AIHandler(IAnalizadorAI iAnalizadorAI, IExtractorInformacion iExtractorInformacion)
         {
-            _iAIAnalyzer = iAIAnalyzer;
-            _iAIInformationExtractor = iAIInformationExtractor;
+            _iAnalizadorAI = iAnalizadorAI;
+            _iExtractorInformacion = iExtractorInformacion;
         }
 
-        public int DetermineType(SolicitudDTO requestDTO)
+        public async Task<int> DeterminarTramiteAsync(string requestDTO)
         {
-            return _iAIAnalyzer.determineType(requestDTO);
+            // Determinar Tramite utilizando el Analizador
+            TramiteDTO asunto = await _iAnalizadorAI.DeterminarTramite(requestDTO);
+
+            return asunto.valor;
         }
 
-
-        public AnalyzedInformationDTO ProcessInfo(List<MemoryStream> files, SolicitudDTO requestDTO)
+        public Task<InformacionAnalizadaDTO> ProcesarInformacion(List<MemoryStream> archivos, SolicitudDTO solicitud, Tramite tramite)
         {
-            // Extract info from files
-            List<ExtractedInfoDTO> infoFromFiles = _iAIInformationExtractor.extractInfoFromFiles(files);
+            List<InformacionExtraidaDTO> textoArchivos = new List<InformacionExtraidaDTO>();
+            // En caso de que el tramite requiera archivos, se extrae la informacion de ellos
+            if (archivos.IsNullOrEmpty() & archivos.Count() > 0)
+            {
+                // Extraer informacion de los archivos
+                textoArchivos = _iExtractorInformacion.extraerInformacionDeArchivos(archivos);
+            }
 
-            // Analyze information
-            return _iAIAnalyzer.analyzeInformation(infoFromFiles, requestDTO);
+
+            // Analizar la informacion
+            return _iAnalizadorAI.AnalizarInformacionAsync(textoArchivos, solicitud, tramite);
         }
+
     }
 }
