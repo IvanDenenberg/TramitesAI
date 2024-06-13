@@ -37,7 +37,7 @@ namespace TramitesAI.src.Repository.Implementations
             Solicitud solicitud = await _context.Solicitudes
                      .FirstOrDefaultAsync(ta => ta.Id == id);
 
-            return solicitud == null ? throw new ApiException(ErrorCode.NOT_FOUND) : solicitud;
+            return solicitud == null ? throw new ApiException(ErrorCode.NO_ENCONTRADO) : solicitud;
         }
 
         public async Task<IEnumerable<Solicitud>> LeerTodos()
@@ -50,7 +50,7 @@ namespace TramitesAI.src.Repository.Implementations
         {
             if (solicitud == null)
             {
-                throw new ApiException(ErrorCode.INVALID_PARAMS);
+                throw new ApiException(ErrorCode.PARAMETROS_INVALIDOS);
             }
 
             _context.Entry(solicitud).State = EntityState.Modified;

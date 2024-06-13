@@ -5,11 +5,13 @@ namespace TramitesAI.src.Business.Domain.Dto
 {
     public class RespuestaDTO
     {
-        public string mensaje { get; set; }
+        public string Mensaje { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public bool valido { get; set; }
-        public Dictionary<string, object> datosEncontrados {  get; set; }
-        public List<string> datosFaltantes { get; set; }
+        public bool Valido { get; set; }
+        public Dictionary<string, object> DatosEncontrados {  get; set; }
+        public List<string> DatosFaltantes { get; set; }
+
+        public int SolicitudProcesadaId { get; set; } 
 
         private RespuestaDTO() { }
 
@@ -24,25 +26,31 @@ namespace TramitesAI.src.Business.Domain.Dto
 
             public RespuestaDTOBuilder Mensaje(string mensaje)
             {
-                dto.mensaje = mensaje;
+                dto.Mensaje = mensaje;
                 return this;
             }
 
             public RespuestaDTOBuilder Valido(bool valido)
             {
-                dto.valido = valido;
+                dto.Valido = valido;
                 return this;
             }
 
             public RespuestaDTOBuilder DatosEncontrados(Dictionary<string, object> datosEncontrados)
             {
-                dto.datosEncontrados = datosEncontrados;
+                dto.DatosEncontrados = datosEncontrados;
                 return this;
             }
 
             public RespuestaDTOBuilder DatosFaltantes(List<string> datosFaltantes)
             {
-                dto.datosFaltantes = datosFaltantes;
+                dto.DatosFaltantes = datosFaltantes;
+                return this;
+            }
+
+            public RespuestaDTOBuilder SolicitudProcesadaId(int solicitudProcesadId)
+            {
+                dto.SolicitudProcesadaId = solicitudProcesadId;
                 return this;
             }
 

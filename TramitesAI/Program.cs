@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text.Json.Serialization;
 using TramitesAI.src.AI.Services.Implementation;
 using TramitesAI.src.AI.Services.Interfaces;
@@ -21,17 +23,29 @@ builder.Services.AddControllers()
 
 builder.Services.AddHttpClient();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-//builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "Tramites AI C# API",
+        Description = "API para procesar solicitudes de tramites para la empresa BDT",
+    });
 
-// Services config
+    // using System.Reflection;
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
+
+// Servicios config
 builder.Services.AddSingleton<IBusinessService, BusinessService>();
 builder.Services.AddSingleton<IAIHandler, AIHandler>();
-builder.Services.AddSingleton<IAIInformationExtractor, TesseractService>();
-builder.Services.AddSingleton<IAIAnalyzer, ProcesadorPython>();
+builder.Services.AddSingleton<IExtractorInformacion, ServicioTesseract>();
+builder.Services.AddSingleton<IAnalizadorAI, ProcesadorPython>();
 builder.Services.AddSingleton<IFileSearcher, GoogleDriveSearcherService>();
 
-// Database config
+// Base de datos config
 string server = Environment.GetEnvironmentVariable("SERVER_NAME");
 string connectionString = "DatabaseConnection";
 connectionString += server;
@@ -41,7 +55,7 @@ builder.Services.AddDbContext<ConfigDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString(connectionString)),
     ServiceLifetime.Singleton);
 
-// Repositories config
+// Repositorios config
 builder.Services.AddSingleton<IRepositorio<Archivo>, ArchivoRepositorio>();
 builder.Services.AddSingleton<IRepositorio<Dato>, DatoRepositorio>();
 builder.Services.AddSingleton<IRepositorio<Respuesta>, RespuestaRepositorio>();
@@ -55,8 +69,11 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    //app.UseSwagger();
-    //app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI(options => // UseSwaggerUI is called only in Development.
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+    });
 }
 
 app.UseHttpsRedirection();

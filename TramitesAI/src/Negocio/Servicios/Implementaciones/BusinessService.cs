@@ -29,15 +29,34 @@ namespace TramitesAI.src.Business.Services.Implementation
             _respuestaRepositorio = respuestaRepositorio;
         }
 
-        public RespuestaDTO GetById(string id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<RespuestaDTO> ProcessAsync(SolicitudDTO solicitudDTO)
+        public async Task<SolicitudProcesada> LeerPorId(int id)
         {
             try
             {
+                // Validando que el id sea valido
+                if (id < 0)
+                {
+                    Console.Error.WriteLine("El id debe ser mayor a 0");
+                    throw new ApiException(ErrorCode.PARAMETROS_INVALIDOS);
+                }
+                Console.WriteLine("Buscando solicitud procesada");
+                return await _solicitudProcesadaRepositorio.LeerPorId(id);
+                
+            } catch (ApiException e)
+            {
+                throw e;
+            } catch (Exception)
+            {
+                throw new ApiException(ErrorCode.ERROR_INTERNO_SERVIDOR);
+            }
+        }
+
+        // Metodo principal del servicio, este es el nucleo del cual desprenden las ramas
+        public async Task<RespuestaDTO> ProcesarAsync(SolicitudDTO solicitudDTO)
+        {
+            try
+            {
+                // Guardamos la solicitud apenas llega
                 Solicitud solicitud = await GuardarSolicitud(solicitudDTO);
                 
                 // Determinar el tipo de la solicitud
@@ -47,9 +66,9 @@ namespace TramitesAI.src.Business.Services.Implementation
                 // Extraer la informacion, generar la SolicitudProcesada y guardarla en la DB
                 int idSolicitudProcesada = await GuardarSolicitudProcesada(solicitudDTO, tramite.Id, solicitud);
 
-                List<MemoryStream> archivos = new List<MemoryStream>();
+                List<MemoryStream> archivos = new();
 
-                Console.WriteLine("Validando si el tramite requiere analizar los archivos");
+                // Validando si el tramite requiere analizar los archivos
                 if (tramite.TramiteArchivos != null & tramite.TramiteArchivos.Count() > 0)
                 {
                     // Obtener los archivos desde un almacenamiento externo
@@ -62,9 +81,8 @@ namespace TramitesAI.src.Business.Services.Implementation
                 InformacionAnalizadaDTO informacionAnalizada = await _AIHandler.ProcesarInformacion(archivos, solicitudDTO, tramite);
                 Console.WriteLine("Informacion analizada");
 
-
                 // Generar respuesta
-                RespuestaDTO respuestaDTO = GenerarRespuesta(informacionAnalizada);
+                RespuestaDTO respuestaDTO = GenerarRespuesta(informacionAnalizada, idSolicitudProcesada);
 
                 Console.WriteLine("Respuesta generada");
                 //Guardar la respuesta en la base de datos
@@ -77,20 +95,23 @@ namespace TramitesAI.src.Business.Services.Implementation
             }
             catch (ApiException ex)
             {
-                if (ex.Code.Equals(ErrorCode.INVALID_SUBJECT.ToString()))
+                if (ex.Codigo.Equals(ErrorCode.ASUNTO_INVALIDO.ToString()))
                 {
-                    return GenerarRespuestaTramiteInvalido();
-                } else if (ex.Code.Equals(ErrorCode.MODEL_NOT_IMPLEMENTED.ToString()))
+                    Console.WriteLine("El mensaje no representa un tipo valido de tramite");
+                    return await GenerarRespuestaTramiteInvalidoAsync();
+                } else if (ex.Codigo.Equals(ErrorCode.MODELO_NO_IMPLEMENTADO.ToString()))
                 {
                     return GenerarRespuestaModeloNoImplementado();
                 } else
                 {
+                    throw new ApiException(ErrorCode.ERROR_INTERNO_SERVIDOR);
                     throw ex;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new ApiException(ErrorCode.INTERNAL_SERVER_ERROR);
+                Console.Error.WriteLine("Error: " + ex.Message);
+                throw new ApiException(ErrorCode.ERROR_INTERNO_SERVIDOR);
             }
         }
 
@@ -115,12 +136,16 @@ namespace TramitesAI.src.Business.Services.Implementation
             return respuestaAGuardar;
         }
 
-        private RespuestaDTO GenerarRespuestaTramiteInvalido()
+        private async Task<RespuestaDTO> GenerarRespuestaTramiteInvalidoAsync()
         {
-            return RespuestaDTO.Builder()
+            var res = RespuestaDTO.Builder()
                 .Mensaje("El tramite no es valido")
                 .Valido(false) 
                 .Build();
+
+            await GuardarRespuestaAsync(res);
+
+            return res;
         }
 
         private async Task<Solicitud> GuardarSolicitud(SolicitudDTO solicitudDto)
@@ -147,9 +172,9 @@ namespace TramitesAI.src.Business.Services.Implementation
                 return await _tramiteRepositorio.LeerPorId(tramiteID);
             } catch (ApiException ex)
             {
-                if (ex.Code.Equals(ErrorCode.NOT_FOUND.ToString()))
+                if (ex.Codigo.Equals(ErrorCode.NO_ENCONTRADO.ToString()))
                 {
-                    throw new ApiException(ErrorCode.INVALID_SUBJECT);
+                    throw new ApiException(ErrorCode.ASUNTO_INVALIDO);
                 } else
                 {
                     throw;
@@ -157,11 +182,11 @@ namespace TramitesAI.src.Business.Services.Implementation
                
             } catch (Exception)
             {
-                throw new ApiException(ErrorCode.INTERNAL_SERVER_ERROR);
+                throw new ApiException(ErrorCode.ERROR_INTERNO_SERVIDOR);
             }
         }
 
-        private RespuestaDTO GenerarRespuesta(InformacionAnalizadaDTO informacionAnalizada)
+        private RespuestaDTO GenerarRespuesta(InformacionAnalizadaDTO informacionAnalizada, int solicitudProcesadaId)
         {
             List<string> datosFaltantes = new List<string>();
             Dictionary<string, object> datosEncontrados = new Dictionary<string, object>();
@@ -182,11 +207,12 @@ namespace TramitesAI.src.Business.Services.Implementation
             RespuestaDTO respuesta = RespuestaDTO.Builder()
                 .DatosEncontrados(datosEncontrados)
                 .Valido(valido)
+                .SolicitudProcesadaId(solicitudProcesadaId)
                 .Build();
 
             if (!datosFaltantes.IsNullOrEmpty())
             {
-                respuesta.datosFaltantes = datosFaltantes;
+                respuesta.DatosFaltantes = datosFaltantes;
             }
 
             return respuesta;
@@ -229,7 +255,7 @@ namespace TramitesAI.src.Business.Services.Implementation
             }
             catch (Exception)
             {
-                throw new ApiException(ErrorCode.INTERNAL_SERVER_ERROR);
+                throw new ApiException(ErrorCode.ERROR_INTERNO_SERVIDOR);
             }
         }
 
@@ -250,6 +276,24 @@ namespace TramitesAI.src.Business.Services.Implementation
             Console.WriteLine("Solicitud procesada creada");
 
             return id;
+        }
+
+        public async Task<IEnumerable<SolicitudProcesada>> LeerTodasSolicitudesProcesadasAsync()
+        {
+            try
+            {
+                Console.WriteLine("Buscando solicitudes procesadas");
+                return await _solicitudProcesadaRepositorio.LeerTodos();
+
+            }
+            catch (ApiException e)
+            {
+                throw e;
+            }
+            catch (Exception)
+            {
+                throw new ApiException(ErrorCode.ERROR_INTERNO_SERVIDOR);
+            }
         }
     }
 }

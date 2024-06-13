@@ -4,8 +4,8 @@ namespace TramitesAI.src.AI.Domain.Dto
 {
     public class InformacionExtraidaDTO
     {
-        public float Confidence { get; set; }
-        public string Text { get; set; }
+        public float Confianza { get; set; }
+        public string Texto { get; set; }
 
         public InformacionExtraidaDTO() { }
 
@@ -18,15 +18,15 @@ namespace TramitesAI.src.AI.Domain.Dto
         {
             private InformacionExtraidaDTO dto = new InformacionExtraidaDTO();
 
-            public ExtractedInfoDTOBuilder Confidence(float confidence)
+            public ExtractedInfoDTOBuilder Confianza(float confidence)
             {
-                dto.Confidence = confidence;
+                dto.Confianza = confidence;
                 return this;
             }
 
-            public ExtractedInfoDTOBuilder Text(string text)
+            public ExtractedInfoDTOBuilder Texto(string text)
             {
-                dto.Text = text;
+                dto.Texto = text;
                 return this;
             }
 

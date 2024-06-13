@@ -14,13 +14,13 @@ namespace TramitesAI.src.Controllers
     [ApiController]
     public class TestController : ControllerBase
     {
-        private readonly IAIInformationExtractor _informationExtractor;
-        private readonly IFileSearcher _fileSearcher;
+        private readonly IExtractorInformacion _informationExtractor;
+        private readonly IBuscadorArchivos _fileSearcher;
         private readonly IRepositorio<Solicitud> _repositorioSolicitud;
         private readonly IRepositorio<SolicitudProcesada> _repositorioSolicitudProcesada;
         private readonly HttpClient _httpClient;
 
-        public TestController(IAIInformationExtractor informationExtractor, IFileSearcher fileSearcher, IRepositorio<Solicitud> repositorioSolicitud, IRepositorio<SolicitudProcesada> repositorioSolicitudProcesada, HttpClient httpClient)
+        public TestController(IExtractorInformacion informationExtractor, IBuscadorArchivos fileSearcher, IRepositorio<Solicitud> repositorioSolicitud, IRepositorio<SolicitudProcesada> repositorioSolicitudProcesada, HttpClient httpClient)
         {
             _informationExtractor = informationExtractor;
             _fileSearcher = fileSearcher;
@@ -53,13 +53,13 @@ namespace TramitesAI.src.Controllers
                     };
 
                     // Extracting info
-                    List<InformacionExtraidaDTO> result = _informationExtractor.extractInfoFromFiles(memoryStreams);
+                    List<InformacionExtraidaDTO> result = _informationExtractor.extraerInformacionDeArchivos(memoryStreams);
                     string response = "";
 
                     foreach (InformacionExtraidaDTO resultDTO in result)
                     {
-                        Console.WriteLine(resultDTO.Confidence);
-                        Console.WriteLine(resultDTO.Text);
+                        Console.WriteLine(resultDTO.Confianza);
+                        Console.WriteLine(resultDTO.Texto);
                         response = JsonSerializer.Serialize(result);
 
                     }
@@ -120,13 +120,13 @@ namespace TramitesAI.src.Controllers
             data.Add(file);
 
             // Extract info
-            List<InformacionExtraidaDTO> result = _informationExtractor.extractInfoFromFiles(data);
+            List<InformacionExtraidaDTO> result = _informationExtractor.extraerInformacionDeArchivos(data);
             string response = "";
 
             foreach (InformacionExtraidaDTO resultDTO in result)
             {
-                Console.WriteLine("Confidence: " + resultDTO.Confidence * 100 + "%");
-                Console.WriteLine("Text: " + resultDTO.Text);
+                Console.WriteLine("Confidence: " + resultDTO.Confianza * 100 + "%");
+                Console.WriteLine("Text: " + resultDTO.Texto);
                 response = JsonSerializer.Serialize(result);
 
             }

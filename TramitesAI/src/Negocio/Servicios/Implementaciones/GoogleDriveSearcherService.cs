@@ -19,7 +19,7 @@ namespace TramitesAI.src.Business.Services.Implementation
 
                 if (jsonApiKey == null)
                 {
-                    throw new ApiException(ErrorCode.MISSING_CONFIG_PROPERTY);
+                    throw new ApiException(ErrorCode.PROPIEDAD_DE_CONFIGURACION_FALTANTE);
                 }
                 Console.WriteLine("Api key encontrada");
 
@@ -56,7 +56,7 @@ namespace TramitesAI.src.Business.Services.Implementation
                 }
                 else
                 {
-                    throw new ApiException(ErrorCode.FILE_NOT_FOUND);
+                    throw new ApiException(ErrorCode.ARCHIVO_NO_ENCONTRADO);
                 }
 
                 return stream;
@@ -69,7 +69,7 @@ namespace TramitesAI.src.Business.Services.Implementation
             catch (Exception e)
             {
                 Console.WriteLine($"Error: {e.Message}");
-                throw new ApiException(ErrorCode.ERROR_DOWNLOAD_FILE);
+                throw new ApiException(ErrorCode.ERROR_DESCARGANDO_ARCHIVO);
             }
         }
     }

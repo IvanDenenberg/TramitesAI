@@ -37,7 +37,7 @@ namespace TramitesAI.src.Repository.Implementations
                      .Include(d => d.TramiteDatos)
                      .FirstOrDefaultAsync(ta => ta.Id == id);
 
-            return dato == null ? throw new ApiException(ErrorCode.NOT_FOUND) : dato;
+            return dato == null ? throw new ApiException(ErrorCode.NO_ENCONTRADO) : dato;
         }
 
         public async Task<IEnumerable<Dato>> LeerTodos()
@@ -51,7 +51,7 @@ namespace TramitesAI.src.Repository.Implementations
         {
             if (dato == null)
             {
-                throw new ApiException(ErrorCode.INVALID_PARAMS);
+                throw new ApiException(ErrorCode.PARAMETROS_INVALIDOS);
             }
 
             _context.Entry(dato).State = EntityState.Modified;

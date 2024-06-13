@@ -10,7 +10,7 @@ using TramitesAI.src.Repository.Domain.Entidades;
 
 namespace TramitesAI.src.AI.Services.Implementation
 {
-    public class ProcesadorPython : IAIAnalyzer
+    public class ProcesadorPython : IAnalizadorAI
     {
         private readonly HttpClient _httpClient;
         private Uri URL_Python = new("http://127.0.0.1:5000");
@@ -61,7 +61,7 @@ namespace TramitesAI.src.AI.Services.Implementation
                         };
                         break;
                     default:
-                        throw new ApiException(ErrorCode.UNKNOWN_ERROR);
+                        throw new ApiException(ErrorCode.ERROR_DESCONOCIDO);
                 }
 
                 // Serializar el objeto a JSON
@@ -75,7 +75,8 @@ namespace TramitesAI.src.AI.Services.Implementation
                 HttpResponseMessage respuesta = await _httpClient.PostAsync(pythonEndpoint, jsonContenido);
                 if (respuesta.StatusCode.Equals(HttpStatusCode.NotImplemented))
                 {
-                    throw new ApiException(ErrorCode.MODEL_NOT_IMPLEMENTED);
+                    Console.Error.WriteLine("El modelo de Python aun no fue implementado");
+                    throw new ApiException(ErrorCode.MODELO_NO_IMPLEMENTADO);
                 }
 
                 respuesta.EnsureSuccessStatusCode();
@@ -89,7 +90,7 @@ namespace TramitesAI.src.AI.Services.Implementation
 
                 if (resultadosToken == null)
                 {
-                    throw new ApiException(ErrorCode.INVALID_JSON);
+                    throw new ApiException(ErrorCode.JSON_INVALIDO);
                 }
 
                 // Deserializar el token de "resultados" a una lista de objetos Resultado
@@ -108,7 +109,7 @@ namespace TramitesAI.src.AI.Services.Implementation
                     throw new ApiException(ErrorCode.HTTP_REQUEST_ERROR);
                 } else
                 {
-                    throw new ApiException(ErrorCode.INTERNAL_SERVER_ERROR);
+                    throw new ApiException(ErrorCode.ERROR_INTERNO_SERVIDOR);
                 }
             }
         }
@@ -143,7 +144,7 @@ namespace TramitesAI.src.AI.Services.Implementation
 
                 if (resultadosToken == null)
                 {
-                    throw new ApiException(ErrorCode.INVALID_JSON);
+                    throw new ApiException(ErrorCode.JSON_INVALIDO);
                 }
 
                 // Deserializar el token de "resultados" a una lista de objetos AsuntoDTO
@@ -157,7 +158,7 @@ namespace TramitesAI.src.AI.Services.Implementation
                 }
                 else
                 {
-                    throw new ApiException(ErrorCode.INTERNAL_SERVER_ERROR);
+                    throw new ApiException(ErrorCode.ERROR_INTERNO_SERVIDOR);
                 }
             }
         }

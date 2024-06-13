@@ -8,18 +8,19 @@ namespace TramitesAI.src.AI.Services.Implementation
 {
     public class AIHandler : IAIHandler
     {
-        private readonly IAIAnalyzer _iAIAnalyzer;
-        private readonly IAIInformationExtractor _iAIInformationExtractor;
+        private readonly IAnalizadorAI _iAnalizadorAI;
+        private readonly IExtractorInformacion _iExtractorInformacion;
 
-        public AIHandler(IAIAnalyzer iAIAnalyzer, IAIInformationExtractor iAIInformationExtractor)
+        public AIHandler(IAnalizadorAI iAnalizadorAI, IExtractorInformacion iExtractorInformacion)
         {
-            _iAIAnalyzer = iAIAnalyzer;
-            _iAIInformationExtractor = iAIInformationExtractor;
+            _iAnalizadorAI = iAnalizadorAI;
+            _iExtractorInformacion = iExtractorInformacion;
         }
 
         public async Task<int> DeterminarTramiteAsync(string requestDTO)
         {
-            TramiteDTO asunto = await _iAIAnalyzer.DeterminarTramite(requestDTO);
+            // Determinar Tramite utilizando el Analizador
+            TramiteDTO asunto = await _iAnalizadorAI.DeterminarTramite(requestDTO);
 
             return asunto.valor;
         }
@@ -27,15 +28,16 @@ namespace TramitesAI.src.AI.Services.Implementation
         public Task<InformacionAnalizadaDTO> ProcesarInformacion(List<MemoryStream> archivos, SolicitudDTO solicitud, Tramite tramite)
         {
             List<InformacionExtraidaDTO> textoArchivos = new List<InformacionExtraidaDTO>();
+            // En caso de que el tramite requiera archivos, se extrae la informacion de ellos
             if (archivos.IsNullOrEmpty() & archivos.Count() > 0)
             {
-                // Extract info from files
-                textoArchivos = _iAIInformationExtractor.extractInfoFromFiles(archivos);
+                // Extraer informacion de los archivos
+                textoArchivos = _iExtractorInformacion.extraerInformacionDeArchivos(archivos);
             }
 
 
-            // Analyze information
-            return _iAIAnalyzer.AnalizarInformacionAsync(textoArchivos, solicitud, tramite);
+            // Analizar la informacion
+            return _iAnalizadorAI.AnalizarInformacionAsync(textoArchivos, solicitud, tramite);
         }
 
     }

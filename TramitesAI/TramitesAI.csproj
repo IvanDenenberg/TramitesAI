@@ -4,6 +4,8 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,6 +40,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.6.2" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.4" />
     <PackageReference Include="Tesseract" Version="5.2.0" />
   </ItemGroup>
@@ -57,5 +60,7 @@
   <ItemGroup>
     <None Remove="C:\Users\ivand\.nuget\packages\tesseract\5.2.0\build\\..\x86\tesseract50.dll" />
   </ItemGroup>
+
+
 
 </Project>

@@ -36,7 +36,7 @@ namespace TramitesAI.src.Repository.Implementations
             Respuesta respuesta = await _context.Respuestas
                      .FirstOrDefaultAsync(ta => ta.Id == id);
 
-            return respuesta == null ? throw new ApiException(ErrorCode.NOT_FOUND) : respuesta;
+            return respuesta == null ? throw new ApiException(ErrorCode.NO_ENCONTRADO) : respuesta;
         }
 
         public async Task<IEnumerable<Respuesta>> LeerTodos()
@@ -49,7 +49,7 @@ namespace TramitesAI.src.Repository.Implementations
         {
             if (respuesta == null)
             {
-                throw new ApiException(ErrorCode.INVALID_PARAMS);
+                throw new ApiException(ErrorCode.PARAMETROS_INVALIDOS);
             }
 
             _context.Entry(respuesta).State = EntityState.Modified;
