@@ -7,7 +7,7 @@ using TramitesAI.src.Common.Exceptions;
 
 namespace TramitesAI.src.Business.Services.Implementation
 {
-    public class GoogleDriveSearcherService : IFileSearcher
+    public class GoogleDriveSearcherService : IBuscadorArchivos
     {
         public GoogleDriveSearcherService() { }
         public MemoryStream ObtenerArchivo(string nombreArchivo, string msgId)

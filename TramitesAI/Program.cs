@@ -39,11 +39,11 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 // Servicios config
-builder.Services.AddSingleton<IBusinessService, BusinessService>();
+builder.Services.AddSingleton<IServicioNegocio, BusinessService>();
 builder.Services.AddSingleton<IAIHandler, AIHandler>();
 builder.Services.AddSingleton<IExtractorInformacion, ServicioTesseract>();
 builder.Services.AddSingleton<IAnalizadorAI, ProcesadorPython>();
-builder.Services.AddSingleton<IFileSearcher, GoogleDriveSearcherService>();
+builder.Services.AddSingleton<IBuscadorArchivos, GoogleDriveSearcherService>();
 
 // Base de datos config
 string server = Environment.GetEnvironmentVariable("SERVER_NAME");

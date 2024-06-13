@@ -3,7 +3,7 @@ using TramitesAI.src.Repository.Domain.Entidades;
 
 namespace TramitesAI.src.Business.Services.Interfaces
 {
-    public interface IBusinessService
+    public interface IServicioNegocio
 
     {
         public Task<RespuestaDTO> ProcesarAsync(SolicitudDTO requestDTO);

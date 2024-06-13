@@ -18,7 +18,7 @@ namespace TramitesAI.src.Repository.Implementations
             var respuesta = await _context.Respuestas.FindAsync(id);
             if (respuesta == null)
             {
-                throw new ApiException(ErrorCode.DELETE_KEY_NOT_FOUND);
+                throw new ApiException(ErrorCode.ERROR_AL_BORRAR);
             }
             _context.Respuestas.Remove(respuesta);
             await _context.SaveChangesAsync();
