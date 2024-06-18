@@ -10,7 +10,12 @@ namespace TramitesAI.src.AI.Services.Implementation
 {
     public class ServicioTesseract : IExtractorInformacion
     {
-        public List<InformacionExtraidaDTO> extraerInformacionDeArchivos(List<MemoryStream> files)
+        public readonly ITesseractEngineWrapper _tesseractWrapper;
+        public ServicioTesseract(ITesseractEngineWrapper tesseractWrapper)
+        {
+            _tesseractWrapper = tesseractWrapper;
+        }
+        public List<InformacionExtraidaDTO> ExtraerInformacionDeArchivos(List<MemoryStream> files)
         {
             List<InformacionExtraidaDTO> list = new List<InformacionExtraidaDTO>();
 
@@ -30,39 +35,30 @@ namespace TramitesAI.src.AI.Services.Implementation
         {
             try
             {
-                // Initialization of the Tesseract engine
-                using (var engine = new TesseractEngine(@"./Tesseract/tessdata", "spa", EngineMode.Default))
+                List<byte[]> imageData;
+                List<InformacionExtraidaDTO> parcialResult = new List<InformacionExtraidaDTO>();
+
+                if (EsPDF(file))
                 {
-                    List<byte[]> imageData;
-                    List<InformacionExtraidaDTO> parcialResult = new List<InformacionExtraidaDTO>();
-
-                    if (EsPDF(file))
-                    {
-                        Console.WriteLine("Convirtiendo archivo PDF a PNG");
-                        imageData = ConvertirPDFaPNG(file, engine);
-                        Console.WriteLine("Convertido");
-                    }
-                    else
-                    {
-                        imageData = new List<byte[]>{
-                            file.ToArray()
-                        };
-                    }
-
-                    foreach (var data in imageData)
-                    {
-                        using (var img = Pix.LoadFromMemory(data))
-                        {
-                            using (var page = engine.Process(img))
-                            {
-                                InformacionExtraidaDTO result = LeerInformacion(page);
-                                parcialResult.Add(result);
-                            }
-                        }
-                    }
-                    Console.WriteLine("Informacion extraida");
-                    return GenerarInformacionExtraidaDTO(parcialResult);
+                    Console.WriteLine("Convirtiendo archivo PDF a PNG");
+                    imageData = ConvertirPDFaPNG(file);
+                    Console.WriteLine("Convertido");
                 }
+                else
+                {
+                    imageData = new List<byte[]>{
+                        file.ToArray()
+                    };
+                }
+
+                foreach (var data in imageData)
+                {
+                    var resultado = _tesseractWrapper.Procesar(data);
+                    parcialResult.Add(resultado);
+                }
+                Console.WriteLine("Informacion extraida");
+                return GenerarInformacionExtraidaDTO(parcialResult);
+                
             }
             catch (Exception ex)
             {
@@ -104,7 +100,7 @@ namespace TramitesAI.src.AI.Services.Implementation
             return header[0] == 0x25 && header[1] == 0x50 && header[2] == 0x44 && header[3] == 0x46;
         }
 
-        static List<byte[]> ConvertirPDFaPNG(MemoryStream archivo, TesseractEngine engine)
+        static List<byte[]> ConvertirPDFaPNG(MemoryStream archivo)
         {
             try
             {
@@ -120,25 +116,6 @@ namespace TramitesAI.src.AI.Services.Implementation
                 Console.WriteLine($"Error convirtiendo de PDF a PNG: {ex.Message}");
                 throw;
             }
-        }
-
-
-        // GetInformation is a method that once the information is extracted by tesseract gets the confidence and the text of each analysis
-        static InformacionExtraidaDTO LeerInformacion(Page pagina)
-        {
-            InformacionExtraidaDTO infoDTO = new InformacionExtraidaDTO();
-            var texto = pagina.GetText();
-            bool contieneLetras = texto.Any(char.IsLetter);
-            if (contieneLetras)
-            {
-                infoDTO.Texto = texto;
-                infoDTO.Confianza = pagina.GetMeanConfidence();
-            }
-            else
-            {
-                Console.WriteLine("Imagen ilustrativa");
-            }
-            return infoDTO;
         }
 
     }
