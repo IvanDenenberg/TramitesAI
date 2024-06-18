@@ -96,15 +96,15 @@ namespace TramitesAI.src.AI.Services.Implementation
                 // Deserializar el token de "resultados" a una lista de objetos Resultado
                 return resultadosToken[0].ToObject<InformacionAnalizadaDTO>();
             }
-            
+            catch (ApiException e)
+            {
+                Console.WriteLine("Error deserializando el JSON: " + e.Message);
+                throw;
+            }
             catch (Exception e)
             {
                 Console.WriteLine("Error deserializando el JSON: " + e.Message);
-                if (e is ApiException)
-                {
-                    throw;
-                } 
-                else if (e is HttpRequestException)
+                if (e is HttpRequestException)
                 {
                     throw new ApiException(ErrorCode.HTTP_REQUEST_ERROR);
                 } else
@@ -149,6 +149,11 @@ namespace TramitesAI.src.AI.Services.Implementation
 
                 // Deserializar el token de "resultados" a una lista de objetos AsuntoDTO
                 return new TramiteDTO((int) resultadosToken[0]);
+            }
+            catch (ApiException e)
+            {
+                Console.WriteLine("Error deserializando el JSON: " + e.Message);
+                throw;
             }
             catch (Exception e)
             {

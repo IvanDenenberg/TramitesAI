@@ -32,7 +32,7 @@ namespace TramitesAI.src.AI.Services.Implementation
             if (archivos.IsNullOrEmpty() & archivos.Count() > 0)
             {
                 // Extraer informacion de los archivos
-                textoArchivos = _iExtractorInformacion.extraerInformacionDeArchivos(archivos);
+                textoArchivos = _iExtractorInformacion.ExtraerInformacionDeArchivos(archivos);
             }
 
 

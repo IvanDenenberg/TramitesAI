@@ -10,7 +10,7 @@ using TramitesAI.src.Repository.Interfaces;
 
 namespace TramitesAI.src.Business.Services.Implementation
 {
-    public class BusinessService : IServicioNegocio
+    public class ServiceNegocio : IServicioNegocio
     {
         private readonly IRepositorio<SolicitudProcesada> _solicitudProcesadaRepositorio;
         private readonly IAIHandler _AIHandler;
@@ -19,7 +19,7 @@ namespace TramitesAI.src.Business.Services.Implementation
         private readonly IRepositorio<Tramite> _tramiteRepositorio;
         private readonly IRepositorio<Respuesta> _respuestaRepositorio;
 
-        public BusinessService(IRepositorio<SolicitudProcesada> solicitudProcesadaRepositorio, IAIHandler aIHandler, IBuscadorArchivos fileSearcher, IRepositorio<Solicitud> solicitudRepositorio, IRepositorio<Tramite> tramiteRepositorio, IRepositorio<Respuesta> respuestaRepositorio)
+        public ServiceNegocio(IRepositorio<SolicitudProcesada> solicitudProcesadaRepositorio, IAIHandler aIHandler, IBuscadorArchivos fileSearcher, IRepositorio<Solicitud> solicitudRepositorio, IRepositorio<Tramite> tramiteRepositorio, IRepositorio<Respuesta> respuestaRepositorio)
         {
             _solicitudProcesadaRepositorio = solicitudProcesadaRepositorio;
             _AIHandler = aIHandler;
@@ -104,7 +104,6 @@ namespace TramitesAI.src.Business.Services.Implementation
                     return GenerarRespuestaModeloNoImplementado();
                 } else
                 {
-                    throw new ApiException(ErrorCode.ERROR_INTERNO_SERVIDOR);
                     throw ex;
                 }
             }

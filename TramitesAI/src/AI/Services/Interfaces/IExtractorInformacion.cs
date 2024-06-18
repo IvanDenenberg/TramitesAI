@@ -4,6 +4,6 @@ namespace TramitesAI.src.AI.Services.Interfaces
 {
     public interface IExtractorInformacion
     {
-        List<InformacionExtraidaDTO> extraerInformacionDeArchivos(List<MemoryStream> files);
+        List<InformacionExtraidaDTO> ExtraerInformacionDeArchivos(List<MemoryStream> files);
     }
 }

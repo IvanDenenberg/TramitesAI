@@ -1,45 +1,31 @@
 ﻿using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
+using Google.Apis.Drive.v3.Data;
 using Google.Apis.Services;
 using System;
 using TramitesAI.src.Business.Services.Interfaces;
 using TramitesAI.src.Common.Exceptions;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace TramitesAI.src.Business.Services.Implementation
 {
-    public class GoogleDriveSearcherService : IBuscadorArchivos
+    public class GoogleDriveServicio : IBuscadorArchivos
     {
-        public GoogleDriveSearcherService() { }
+        public DriveService DriveService { get; private set; }
+        public GoogleDriveServicio(DriveService service) 
+        {
+            DriveService = service;
+        }
         public MemoryStream ObtenerArchivo(string nombreArchivo, string msgId)
         {
             try
             {
-                // Obteniendo la Api Key para utilizar Google Drive y validandola
-                string jsonApiKey = @"./Credentials/tramitesai-366f1be7dfc8.json";
-
-                if (jsonApiKey == null)
-                {
-                    throw new ApiException(ErrorCode.PROPIEDAD_DE_CONFIGURACION_FALTANTE);
-                }
-                Console.WriteLine("Api key encontrada");
-
-                // Conectando a Google Drive
-                GoogleCredential credencial = GoogleCredential.FromFile(jsonApiKey)
-                    .CreateScoped(new[] { DriveService.ScopeConstants.Drive });
-
-                DriveService service = new(new BaseClientService.Initializer()
-                {
-                    HttpClientInitializer = credencial
-                });
-
-                Console.WriteLine("Conectado a google drive");
-
                 // Definiendo el archivo a descargar
                 string nombreArchivoBuscado = $"{msgId}_{nombreArchivo}";
 
                 // Buscando dentro de Google Drive con el nombre del archivo para encontrar el ID
                 // Una vez obtenido el ID se utiliza este para descargar al archivo
-                FilesResource.ListRequest listRequest = service.Files.List();
+                FilesResource.ListRequest listRequest = DriveService.Files.List();
                 listRequest.Q = $"name='{nombreArchivoBuscado}'";
 
                 IList<Google.Apis.Drive.v3.Data.File> files = listRequest.Execute().Files;
@@ -49,7 +35,7 @@ namespace TramitesAI.src.Business.Services.Implementation
                 if (archivoBuscado != null)
                 {
                     Console.WriteLine("Archivo Encontrado");
-                    var request = service.Files.Get(archivoBuscado.Id);
+                    var request = DriveService.Files.Get(archivoBuscado.Id);
                     request.Download(stream);
                     stream.Position = 0;
                     Console.WriteLine("Archivo Descargado");

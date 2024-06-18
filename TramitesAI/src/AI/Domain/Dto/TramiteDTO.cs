@@ -4,6 +4,8 @@
     {
         public int valor { get; set; }
 
+        public TramiteDTO() { }
+
         public TramiteDTO(int valor)
         {
             this.valor = valor;

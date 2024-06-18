@@ -53,7 +53,7 @@ namespace TramitesAI.src.Controllers
                     };
 
                     // Extracting info
-                    List<InformacionExtraidaDTO> result = _informationExtractor.extraerInformacionDeArchivos(memoryStreams);
+                    List<InformacionExtraidaDTO> result = _informationExtractor.ExtraerInformacionDeArchivos(memoryStreams);
                     string response = "";
 
                     foreach (InformacionExtraidaDTO resultDTO in result)
@@ -120,7 +120,7 @@ namespace TramitesAI.src.Controllers
             data.Add(file);
 
             // Extract info
-            List<InformacionExtraidaDTO> result = _informationExtractor.extraerInformacionDeArchivos(data);
+            List<InformacionExtraidaDTO> result = _informationExtractor.ExtraerInformacionDeArchivos(data);
             string response = "";
 
             foreach (InformacionExtraidaDTO resultDTO in result)
