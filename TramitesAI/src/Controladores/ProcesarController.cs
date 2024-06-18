@@ -19,10 +19,25 @@ namespace TramitesAI.src.Controllers
             _servicioNegocio = businessService;
         }
 
+        /// <summary>
+        /// Procesa las solicitudes enviadas
+        /// </summary>
+        /// <param name="request">La solicitud a procesar</param>
+        /// <returns>La respuesta del procesamiento</returns>
+        /// <response code="200">Éxito / Trámite inválido</response>
+        /// <response code="400">Error ejecutando HTTP request / JSON inválido</response>
+        /// <response code="404">Archivo no encontrado / Trámite no encontrado</response>
+        /// <response code="500">Error interno del servidor / Error al descargar el archivo</response>
+        /// <response code="501">Modelo no implementado</response>
         [HttpPost]
         [SwaggerOperation(Summary = "Procesa las solicitudes enviadas")]
         [SwaggerResponse(200, "Éxito", typeof(RespuestaDTO))]
         [SwaggerResponse(200, "Tramite invalido", typeof(RespuestaDTO))]
+        [SwaggerResponse(400, "Error ejecutando HTTP request", typeof(RespuestaErrorDTO))]
+        [SwaggerResponse(400, "JSON Invalido", typeof(RespuestaErrorDTO))]
+        [SwaggerResponse(404, "Archivo no encontrado", typeof(RespuestaErrorDTO))]
+        [SwaggerResponse(404, "Tramite no encontrado", typeof(RespuestaErrorDTO))]
+        [SwaggerResponse(500, "Error al descargar el archivo", typeof(RespuestaErrorDTO))]
         [SwaggerResponse(500, "Error interno del servidor", typeof(RespuestaErrorDTO))]
         [SwaggerResponse(501, "Modelo no implementado", typeof(RespuestaErrorDTO))]
         public async Task<IActionResult> ProcesarAsync([FromBody] SolicitudDTO request)
@@ -38,6 +53,14 @@ namespace TramitesAI.src.Controllers
             }
         }
 
+        /// <summary>
+        /// Obtiene un elemento por ID
+        /// </summary>
+        /// <param name="id">El ID del elemento a obtener</param>
+        /// <returns>La respuesta de la solicitud</returns>
+        /// <response code="200">Éxito</response>
+        /// <response code="404">No encontrado</response>
+        /// <response code="500">Error interno del servidor</response>
         [HttpGet("leer-por-id/{id}")]
         [SwaggerOperation(Summary = "Obtiene un elemento por ID")]
         [SwaggerResponse(200, "Éxito", typeof(RespuestaDTO))]
@@ -57,6 +80,12 @@ namespace TramitesAI.src.Controllers
             }
         }
 
+        /// <summary>
+        /// Obtiene todos los elementos
+        /// </summary>
+        /// <returns>La lista de todos los elementos procesados</returns>
+        /// <response code="200">Éxito</response>
+        /// <response code="500">Error interno del servidor</response>
         [HttpGet("leer-todas")]
         [SwaggerOperation(Summary = "Obtiene todos los elementos")]
         [SwaggerResponse(200, "Éxito", typeof(IEnumerable<RespuestaDTO>))]
