@@ -11,6 +11,8 @@ using TramitesAI.src.AI.Services.Interfaces;
 using TramitesAI.src.Business.Services.Implementation;
 using TramitesAI.src.Business.Services.Interfaces;
 using TramitesAI.src.Common.Exceptions;
+using TramitesAI.src.Comun.Servicios.Implementaciones;
+using TramitesAI.src.Comun.Servicios.Interfaces;
 using TramitesAI.src.Repository.Configuration;
 using TramitesAI.src.Repository.Domain.Entidades;
 using TramitesAI.src.Repository.Implementations;
@@ -47,6 +49,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddSingleton<IServicioNegocio, ServiceNegocio>();
 builder.Services.AddSingleton<IAIHandler, AIHandler>();
 builder.Services.AddSingleton<IExtractorInformacion, ServicioTesseract>();
+builder.Services.AddSingleton<IHttpClientWrapper, HttpClientWrapper>();
 builder.Services.AddSingleton<ITesseractEngineWrapper, TesseractEngineWrapper>();
 builder.Services.AddSingleton(provider =>
     {
@@ -103,7 +106,6 @@ builder.Services.AddSingleton<IRepositorio<SolicitudProcesada>, SolicitudProcesa
 builder.Services.AddSingleton<IRepositorio<Solicitud>, SolicitudRepositorio>();
 builder.Services.AddSingleton<IRepositorio<Tramite>, TramiteRepositorio>();
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -123,3 +125,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

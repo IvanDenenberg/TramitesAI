@@ -6,19 +6,18 @@ using TramitesAI.src.AI.Domain.Dto;
 using TramitesAI.src.AI.Services.Interfaces;
 using TramitesAI.src.Business.Domain.Dto;
 using TramitesAI.src.Common.Exceptions;
+using TramitesAI.src.Comun.Servicios.Interfaces;
 using TramitesAI.src.Repository.Domain.Entidades;
 
 namespace TramitesAI.src.AI.Services.Implementation
 {
     public class ProcesadorPython : IAnalizadorAI
     {
-        private readonly HttpClient _httpClient;
-        private Uri URL_Python = new("http://127.0.0.1:5000");
+        private readonly IHttpClientWrapper _httpClientWrapper;
 
-        public ProcesadorPython(HttpClient httpClient)
+        public ProcesadorPython(IHttpClientWrapper httpClientWrapper)
         {
-            _httpClient = httpClient;
-            _httpClient.BaseAddress = URL_Python;
+            _httpClientWrapper = httpClientWrapper;
         }
 
         public async Task<InformacionAnalizadaDTO> AnalizarInformacionAsync(List<InformacionExtraidaDTO> textoArchivos, SolicitudDTO solicitud, Tramite tramite)
@@ -64,15 +63,8 @@ namespace TramitesAI.src.AI.Services.Implementation
                         throw new ApiException(ErrorCode.ERROR_DESCONOCIDO);
                 }
 
-                // Serializar el objeto a JSON
-                var jsonContenido = new StringContent(
-                    JsonConvert.SerializeObject(contenido),
-                    Encoding.UTF8,
-                    "application/json"
-                );
-
                 // Hacer la solicitud POST al endpoint /analyze
-                HttpResponseMessage respuesta = await _httpClient.PostAsync(pythonEndpoint, jsonContenido);
+                HttpResponseMessage respuesta = await _httpClientWrapper.PostAsync(pythonEndpoint, contenido);
                 if (respuesta.StatusCode.Equals(HttpStatusCode.NotImplemented))
                 {
                     Console.Error.WriteLine("El modelo de Python aun no fue implementado");
@@ -124,15 +116,8 @@ namespace TramitesAI.src.AI.Services.Implementation
                     textos = new List<string> { asunto }
                 };
 
-                // Serializar el objeto a JSON
-                var jsonContenido = new StringContent(
-                    JsonConvert.SerializeObject(contenido),
-                    Encoding.UTF8,
-                    "application/json"
-                );
-
                 // Hacer la solicitud 
-                HttpResponseMessage respuesta = await _httpClient.PostAsync("/evaluar_asunto", jsonContenido);
+                HttpResponseMessage respuesta = await _httpClientWrapper.PostAsync("/evaluar_asunto", contenido);
                 respuesta.EnsureSuccessStatusCode();
 
                 // Leer el contenido de la respuesta como una cadena

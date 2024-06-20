@@ -99,9 +99,6 @@ namespace TramitesAI.src.Business.Services.Implementation
                 {
                     Console.WriteLine("El mensaje no representa un tipo valido de tramite");
                     return await GenerarRespuestaTramiteInvalidoAsync();
-                } else if (ex.Codigo.Equals(ErrorCode.MODELO_NO_IMPLEMENTADO.ToString()))
-                {
-                    return GenerarRespuestaModeloNoImplementado();
                 } else
                 {
                     throw ex;
@@ -112,13 +109,6 @@ namespace TramitesAI.src.Business.Services.Implementation
                 Console.Error.WriteLine("Error: " + ex.Message);
                 throw new ApiException(ErrorCode.ERROR_INTERNO_SERVIDOR);
             }
-        }
-
-        private RespuestaDTO GenerarRespuestaModeloNoImplementado()
-        {
-            return RespuestaDTO.Builder()
-                .Mensaje("El modelo para el tramite aun no fue implementado")
-                .Build();
         }
 
         private async Task<Respuesta> GuardarRespuestaAsync(RespuestaDTO respuestaDTO)
@@ -212,6 +202,11 @@ namespace TramitesAI.src.Business.Services.Implementation
             if (!datosFaltantes.IsNullOrEmpty())
             {
                 respuesta.DatosFaltantes = datosFaltantes;
+                // Si solamente no se encuentra el campo modelo, dar el tramite por valido
+                if (datosFaltantes.Count() == 1 && datosFaltantes.Contains("Modelo"))
+                {
+                    respuesta.Valido = true;
+                }
             }
 
             return respuesta;

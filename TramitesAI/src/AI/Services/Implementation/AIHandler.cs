@@ -22,7 +22,7 @@ namespace TramitesAI.src.AI.Services.Implementation
             // Determinar Tramite utilizando el Analizador
             TramiteDTO asunto = await _iAnalizadorAI.DeterminarTramite(requestDTO);
 
-            return asunto.valor;
+             return asunto.valor;
         }
 
         public Task<InformacionAnalizadaDTO> ProcesarInformacion(List<MemoryStream> archivos, SolicitudDTO solicitud, Tramite tramite)
