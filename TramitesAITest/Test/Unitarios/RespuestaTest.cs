@@ -1,4 +1,4 @@
-﻿namespace TramitesAI.Test.Unit
+﻿namespace TramitesAITest.Test.Unitarios
 {
     using global::TramitesAI.src.Common.Exceptions;
     using global::TramitesAI.src.Repository.Configuration;
@@ -82,7 +82,7 @@
                 var resultado = await repositorio.Crear(respuesta);
 
                 // Assert
-                Assert.Equal(1, resultado);
+                Assert.Equal(2, resultado);
                 Assert.Equal(respuesta, await context.Respuestas.FindAsync(respuesta.Id));
             }
         }

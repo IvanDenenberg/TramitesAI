@@ -1,35 +1,29 @@
 ﻿using Moq;
-using Moq.Protected;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using TramitesAI.src.AI.Domain.Dto;
 using TramitesAI.src.AI.Services.Implementation;
 using TramitesAI.src.Business.Domain.Dto;
 using TramitesAI.src.Common.Exceptions;
+using TramitesAI.src.Comun.Servicios.Interfaces;
 using TramitesAI.src.Repository.Domain.Entidades;
 using Xunit;
 
-namespace TramitesAI.Tests.AI.Services.Implementation
+namespace TramitesAITest.Test.Unitarios
 {
     public class ProcesadorPythonTests
     {
-        private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
-        private readonly HttpClient _httpClient;
+        private readonly Mock<IHttpClientWrapper> _mockHttpClientWrapper;
         private readonly ProcesadorPython _procesadorPython;
 
         public ProcesadorPythonTests()
         {
-            _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-            _httpClient = new HttpClient(_mockHttpMessageHandler.Object)
-            {
-                BaseAddress = new Uri("http://127.0.0.1:5000")
-            };
-            _procesadorPython = new ProcesadorPython(_httpClient);
+            _mockHttpClientWrapper = new Mock<IHttpClientWrapper>();
+            _procesadorPython = new ProcesadorPython(_mockHttpClientWrapper.Object);
         }
 
         [Fact]
@@ -41,12 +35,7 @@ namespace TramitesAI.Tests.AI.Services.Implementation
             var tramite = new Tramite { Nombre = "Denuncia Siniestro" };
             var expectedResponse = new { resultados = new List<InformacionAnalizadaDTO> { new InformacionAnalizadaDTO { Texto = "Resultado" } } };
 
-            _mockHttpMessageHandler.Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>()
-                )
+            _mockHttpClientWrapper.Setup(x => x.PostAsync(It.IsAny<string>(), It.IsAny<object>()))
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
@@ -69,12 +58,7 @@ namespace TramitesAI.Tests.AI.Services.Implementation
             var solicitud = new SolicitudDTO { Message = "Mensaje de prueba" };
             var tramite = new Tramite { Nombre = "Denuncia Siniestro" };
 
-            _mockHttpMessageHandler.Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>()
-                )
+            _mockHttpClientWrapper.Setup(x => x.PostAsync(It.IsAny<string>(), It.IsAny<object>()))
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.NotImplemented
@@ -93,12 +77,7 @@ namespace TramitesAI.Tests.AI.Services.Implementation
             var solicitud = new SolicitudDTO { Message = "Mensaje de prueba" };
             var tramite = new Tramite { Nombre = "Denuncia Siniestro" };
 
-            _mockHttpMessageHandler.Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>()
-                )
+            _mockHttpClientWrapper.Setup(x => x.PostAsync(It.IsAny<string>(), It.IsAny<object>()))
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
@@ -117,12 +96,7 @@ namespace TramitesAI.Tests.AI.Services.Implementation
             var asunto = "Consulta de poliza";
             var expectedResponse = new { resultados = new List<int> { 1 } };
 
-            _mockHttpMessageHandler.Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>()
-                )
+            _mockHttpClientWrapper.Setup(x => x.PostAsync(It.IsAny<string>(), It.IsAny<object>()))
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
@@ -143,12 +117,7 @@ namespace TramitesAI.Tests.AI.Services.Implementation
             // Arrange
             var asunto = "Consulta de poliza";
 
-            _mockHttpMessageHandler.Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>()
-                )
+            _mockHttpClientWrapper.Setup(x => x.PostAsync(It.IsAny<string>(), It.IsAny<object>()))
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
@@ -166,12 +135,7 @@ namespace TramitesAI.Tests.AI.Services.Implementation
             // Arrange
             var asunto = "Consulta de poliza";
 
-            _mockHttpMessageHandler.Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>()
-                )
+            _mockHttpClientWrapper.Setup(x => x.PostAsync(It.IsAny<string>(), It.IsAny<object>()))
                 .Throws(new HttpRequestException("Error de red"));
 
             // Act & Assert

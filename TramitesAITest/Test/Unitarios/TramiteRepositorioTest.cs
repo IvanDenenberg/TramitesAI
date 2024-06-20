@@ -1,4 +1,4 @@
-﻿namespace TramitesAI.Test.Unit
+﻿namespace TramitesAITest.Test.Unitarios
 {
     using global::TramitesAI.src.Common.Exceptions;
     using global::TramitesAI.src.Repository.Configuration;

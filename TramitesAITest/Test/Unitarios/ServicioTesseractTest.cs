@@ -8,7 +8,7 @@ using TramitesAI.src.AI.Services.Interfaces;
 using TramitesAI.src.Common.Exceptions;
 using Xunit;
 
-namespace TramitesAI.Tests.AI.Services.Implementation
+namespace TramitesAITest.Test.Unitarios
 {
     public class ServicioTesseractTests
     {
@@ -59,33 +59,5 @@ namespace TramitesAI.Tests.AI.Services.Implementation
             var exception = Assert.Throws<ApiException>(() => _servicioTesseract.ExtraerInformacionDeArchivos(memoryStreams));
             Assert.Equal(ErrorCode.ERROR_EXTRAYENDO_TEXTOS.ToString(), exception.Codigo);
         }
-
-
-        // TODO IVAN: Este test no funciona salvo que siga haciendo wrappers
-        //[Fact]
-        //public void ExtraerInformacionDeArchivos_DeberiaConvertirPDFaPNG_CuandoArchivoEsPDF()
-        //{
-
-        //    // Arrange
-        //    var pdfContent = new byte[] { 0x25, 0x50, 0x44, 0x46, 0x2D }; // PDF header bytes
-        //    var memoryStream = new MemoryStream(pdfContent);
-        //    var expectedDto = new InformacionExtraidaDTO
-        //    {
-        //        Texto = "Texto de prueba PDF",
-        //        Confianza = 0.8f
-        //    };
-
-        //    _mockTesseractWrapper
-        //        .Setup(wrapper => wrapper.Procesar(It.IsAny<byte[]>()))
-        //        .Returns(expectedDto);
-
-        //    // Act
-        //    var result = _servicioTesseract.ExtraerInformacionDeArchivos(new List<MemoryStream> { memoryStream });
-
-        //    // Assert
-        //    Assert.Single(result);
-        //    Assert.Equal(expectedDto.Texto, result[0].Texto);
-        //    Assert.Equal(expectedDto.Confianza, result[0].Confianza);
-        //}
     }
 }
