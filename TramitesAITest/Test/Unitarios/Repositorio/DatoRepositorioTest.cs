@@ -1,8 +1,8 @@
-﻿namespace TramitesAITest.Test.Unitarios
+﻿namespace TramitesAITest.Test.Unitarios.Repositorio
 {
-    using global::TramitesAI.src.Common.Exceptions;
-    using global::TramitesAI.src.Repository.Configuration;
-    using global::TramitesAI.src.Repository.Domain.Entidades;
+    using TramitesAI.src.Common.Exceptions;
+    using TramitesAI.src.Repository.Configuration;
+    using TramitesAI.src.Repository.Domain.Entidades;
     using Microsoft.EntityFrameworkCore;
     using System;
     using System.Collections.Generic;
@@ -11,14 +11,14 @@
     using TramitesAI.src.Repositorio.Servicios.Implementaciones;
     using Xunit;
 
-    public class SolicitudRepositorioTests : IDisposable
+    public class DatoRepositorioTests : IDisposable
     {
         private readonly DbContextOptions<ConfigDBContext> _dbContextOptions;
 
-        public SolicitudRepositorioTests()
+        public DatoRepositorioTests()
         {
             _dbContextOptions = new DbContextOptionsBuilder<ConfigDBContext>()
-                .UseInMemoryDatabase(databaseName: "TestSolicitudesDatabase")
+                .UseInMemoryDatabase(databaseName: "TestDatosDatabase")
                 .Options;
         }
 
@@ -37,32 +37,32 @@
         }
 
         [Fact]
-        public async Task Borrar_SolicitudExistente_DevuelveSolicitud()
+        public async Task Borrar_DatoExistente_DevuelveDato()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var solicitud = new Solicitud { Id = 1, MensajeSolicitud = "Solicitud1" };
-                context.Solicitudes.Add(solicitud);
+                var dato = new Dato { Id = 1, Nombre = "Dato1" };
+                context.Datos.Add(dato);
                 await context.SaveChangesAsync();
 
-                var repositorio = new SolicitudRepositorio(context);
+                var repositorio = new DatoRepositorio(context);
 
                 // Act
                 var resultado = await repositorio.Borrar(1);
 
                 // Assert
-                Assert.Equal(solicitud, resultado);
+                Assert.Equal(dato, resultado);
             }
         }
 
         [Fact]
-        public async Task Borrar_SolicitudNoExistente_LanzaApiException()
+        public async Task Borrar_DatoNoExistente_LanzaApiException()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var repositorio = new SolicitudRepositorio(context);
+                var repositorio = new DatoRepositorio(context);
 
                 // Act & Assert
                 await Assert.ThrowsAsync<ApiException>(() => repositorio.Borrar(999));
@@ -70,50 +70,50 @@
         }
 
         [Fact]
-        public async Task Crear_SolicitudNuevo_GuardaSolicitud()
+        public async Task Crear_DatoNuevo_GuardaDato()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var repositorio = new SolicitudRepositorio(context);
-                var solicitud = new Solicitud { Id = 2, MensajeSolicitud = "Solicitud2" };
+                var repositorio = new DatoRepositorio(context);
+                var dato = new Dato { Id = 2, Nombre = "Dato2" };
 
                 // Act
-                var resultado = await repositorio.Crear(solicitud);
+                var resultado = await repositorio.Crear(dato);
 
                 // Assert
-                Assert.Equal(2, resultado);
-                Assert.Equal(solicitud, await context.Solicitudes.FindAsync(solicitud.Id));
+                Assert.Equal(1, resultado);
+                Assert.Equal(dato, await context.Datos.FindAsync(dato.Id));
             }
         }
 
         [Fact]
-        public async Task LeerPorId_SolicitudExistente_DevuelveSolicitud()
+        public async Task LeerPorId_DatoExistente_DevuelveDato()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var solicitud = new Solicitud { Id = 3, MensajeSolicitud = "Solicitud3" };
-                context.Solicitudes.Add(solicitud);
+                var dato = new Dato { Id = 3, Nombre = "Dato3" };
+                context.Datos.Add(dato);
                 await context.SaveChangesAsync();
 
-                var repositorio = new SolicitudRepositorio(context);
+                var repositorio = new DatoRepositorio(context);
 
                 // Act
                 var resultado = await repositorio.LeerPorId(3);
 
                 // Assert
-                Assert.Equal(solicitud, resultado);
+                Assert.Equal(dato, resultado);
             }
         }
 
         [Fact]
-        public async Task LeerPorId_SolicitudNoExistente_LanzaApiException()
+        public async Task LeerPorId_DatoNoExistente_LanzaApiException()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var repositorio = new SolicitudRepositorio(context);
+                var repositorio = new DatoRepositorio(context);
 
                 // Act & Assert
                 await Assert.ThrowsAsync<ApiException>(() => repositorio.LeerPorId(999));
@@ -121,17 +121,17 @@
         }
 
         [Fact]
-        public async Task LeerTodos_DevuelveListaDeSolicitudes()
+        public async Task LeerTodos_DevuelveListaDeDatos()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var solicitud1 = new Solicitud { Id = 4, MensajeSolicitud = "Solicitud4" };
-                var solicitud2 = new Solicitud { Id = 5, MensajeSolicitud = "Solicitud5" };
-                context.Solicitudes.AddRange(solicitud1, solicitud2);
+                var dato1 = new Dato { Id = 4, Nombre = "Dato4" };
+                var dato2 = new Dato { Id = 5, Nombre = "Dato5" };
+                context.Datos.AddRange(dato1, dato2);
                 await context.SaveChangesAsync();
 
-                var repositorio = new SolicitudRepositorio(context);
+                var repositorio = new DatoRepositorio(context);
 
                 // Act
                 var resultado = await repositorio.LeerTodos();
@@ -145,33 +145,33 @@
         }
 
         [Fact]
-        public async Task Modificar_SolicitudExistente_ActualizaSolicitud()
+        public async Task Modificar_DatoExistente_ActualizaDato()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var solicitud = new Solicitud { Id = 6, MensajeSolicitud = "Original" };
-                context.Solicitudes.Add(solicitud);
+                var dato = new Dato { Id = 6, Nombre = "Original" };
+                context.Datos.Add(dato);
                 await context.SaveChangesAsync();
 
-                var repositorio = new SolicitudRepositorio(context);
-                solicitud.MensajeSolicitud = "Modificado";
+                var repositorio = new DatoRepositorio(context);
+                dato.Nombre = "Modificado";
 
                 // Act
-                var resultado = await repositorio.Modificar(solicitud);
+                var resultado = await repositorio.Modificar(dato);
 
                 // Assert
-                Assert.Equal("Modificado", resultado.MensajeSolicitud);
+                Assert.Equal("Modificado", resultado.Nombre);
             }
         }
 
         [Fact]
-        public async Task Modificar_SolicitudNull_LanzaApiException()
+        public async Task Modificar_DatoNull_LanzaApiException()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var repositorio = new SolicitudRepositorio(context);
+                var repositorio = new DatoRepositorio(context);
 
                 // Act & Assert
                 await Assert.ThrowsAsync<ApiException>(() => repositorio.Modificar(null));

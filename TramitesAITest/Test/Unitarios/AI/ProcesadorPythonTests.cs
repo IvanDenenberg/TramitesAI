@@ -13,7 +13,7 @@ using TramitesAI.src.Comun.Servicios.Interfaces;
 using TramitesAI.src.Repository.Domain.Entidades;
 using Xunit;
 
-namespace TramitesAITest.Test.Unitarios
+namespace TramitesAITest.Test.Unitarios.AI
 {
     public class ProcesadorPythonTests
     {

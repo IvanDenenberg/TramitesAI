@@ -1,24 +1,25 @@
-﻿namespace TramitesAITest.Test.Unitarios
+﻿namespace TramitesAITest.Test.Unitarios.Repositorio
 {
-    using global::TramitesAI.src.Common.Exceptions;
-    using global::TramitesAI.src.Repository.Configuration;
-    using global::TramitesAI.src.Repository.Domain.Entidades;
+    using TramitesAI.src.Common.Exceptions;
+    using TramitesAI.src.Repository.Configuration;
+    using TramitesAI.src.Repository.Domain.Entidades;
     using TramitesAI.src.Repositorio.Servicios.Implementaciones;
     using Microsoft.EntityFrameworkCore;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using TramitesAI.src.Repositorio.Servicios.Implementaciones;
     using Xunit;
 
-    public class TramiteRepositorioTests : IDisposable
+    public class ArchivoRepositorioTests : IDisposable
     {
         private readonly DbContextOptions<ConfigDBContext> _dbContextOptions;
 
-        public TramiteRepositorioTests()
+        public ArchivoRepositorioTests()
         {
             _dbContextOptions = new DbContextOptionsBuilder<ConfigDBContext>()
-                .UseInMemoryDatabase(databaseName: "TestTramitesDatabase")
+                .UseInMemoryDatabase(databaseName: "TestArchivosDatabase")
                 .Options;
         }
 
@@ -37,32 +38,32 @@
         }
 
         [Fact]
-        public async Task Borrar_TramiteExistente_DevuelveTramite()
+        public async Task Borrar_ArchivoExistente_DevuelveArchivo()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var tramite = new Tramite { Id = 1, Nombre = "Tramite1" };
-                context.Tramites.Add(tramite);
+                var archivo = new Archivo { Id = 1, Nombre = "Archivo1", Obligatorio = true, TramiteArchivos = new List<TramiteArchivo>() };
+                context.Archivos.Add(archivo);
                 await context.SaveChangesAsync();
 
-                var repositorio = new TramiteRepositorio(context);
+                var repositorio = new ArchivoRepositorio(context);
 
                 // Act
                 var resultado = await repositorio.Borrar(1);
 
                 // Assert
-                Assert.Equal(tramite, resultado);
+                Assert.Equal(archivo, resultado);
             }
         }
 
         [Fact]
-        public async Task Borrar_TramiteNoExistente_LanzaApiException()
+        public async Task Borrar_ArchivoNoExistente_LanzaApiException()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var repositorio = new TramiteRepositorio(context);
+                var repositorio = new ArchivoRepositorio(context);
 
                 // Act & Assert
                 await Assert.ThrowsAsync<ApiException>(() => repositorio.Borrar(999));
@@ -70,50 +71,50 @@
         }
 
         [Fact]
-        public async Task Crear_TramiteNuevo_GuardaTramite()
+        public async Task Crear_ArchivoNuevo_GuardaArchivo()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var repositorio = new TramiteRepositorio(context);
-                var tramite = new Tramite { Id = 2, Nombre = "Tramite2" };
+                var repositorio = new ArchivoRepositorio(context);
+                var archivo = new Archivo { Id = 2, Nombre = "Archivo2", Obligatorio = false, TramiteArchivos = new List<TramiteArchivo>() };
 
                 // Act
-                var resultado = await repositorio.Crear(tramite);
+                var resultado = await repositorio.Crear(archivo);
 
                 // Assert
                 Assert.Equal(1, resultado);
-                Assert.Equal(tramite, await context.Tramites.FindAsync(tramite.Id));
+                Assert.Equal(archivo, await context.Archivos.FindAsync(archivo.Id));
             }
         }
 
         [Fact]
-        public async Task LeerPorId_TramiteExistente_DevuelveTramite()
+        public async Task LeerPorId_ArchivoExistente_DevuelveArchivo()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var tramite = new Tramite { Id = 3, Nombre = "Tramite3" };
-                context.Tramites.Add(tramite);
+                var archivo = new Archivo { Id = 3, Nombre = "Archivo3", Obligatorio = false, TramiteArchivos = new List<TramiteArchivo>() };
+                context.Archivos.Add(archivo);
                 await context.SaveChangesAsync();
 
-                var repositorio = new TramiteRepositorio(context);
+                var repositorio = new ArchivoRepositorio(context);
 
                 // Act
                 var resultado = await repositorio.LeerPorId(3);
 
                 // Assert
-                Assert.Equal(tramite, resultado);
+                Assert.Equal(archivo, resultado);
             }
         }
 
         [Fact]
-        public async Task LeerPorId_TramiteNoExistente_LanzaApiException()
+        public async Task LeerPorId_ArchivoNoExistente_LanzaApiException()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var repositorio = new TramiteRepositorio(context);
+                var repositorio = new ArchivoRepositorio(context);
 
                 // Act & Assert
                 await Assert.ThrowsAsync<ApiException>(() => repositorio.LeerPorId(999));
@@ -121,17 +122,17 @@
         }
 
         [Fact]
-        public async Task LeerTodos_DevuelveListaDeTramites()
+        public async Task LeerTodos_DevuelveListaDeArchivos()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var tramite1 = new Tramite { Id = 4, Nombre = "Tramite4" };
-                var tramite2 = new Tramite { Id = 5, Nombre = "Tramite5" };
-                context.Tramites.AddRange(tramite1, tramite2);
+                var archivo1 = new Archivo { Id = 4, Nombre = "Archivo4", Obligatorio = true, TramiteArchivos = new List<TramiteArchivo>() };
+                var archivo2 = new Archivo { Id = 5, Nombre = "Archivo5", Obligatorio = false, TramiteArchivos = new List<TramiteArchivo>() };
+                context.Archivos.AddRange(archivo1, archivo2);
                 await context.SaveChangesAsync();
 
-                var repositorio = new TramiteRepositorio(context);
+                var repositorio = new ArchivoRepositorio(context);
 
                 // Act
                 var resultado = await repositorio.LeerTodos();
@@ -145,20 +146,20 @@
         }
 
         [Fact]
-        public async Task Modificar_TramiteExistente_ActualizaTramite()
+        public async Task Modificar_ArchivoExistente_ActualizaArchivo()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var tramite = new Tramite { Id = 6, Nombre = "Original" };
-                context.Tramites.Add(tramite);
+                var archivo = new Archivo { Id = 6, Nombre = "Original", Obligatorio = false, TramiteArchivos = new List<TramiteArchivo>() };
+                context.Archivos.Add(archivo);
                 await context.SaveChangesAsync();
 
-                var repositorio = new TramiteRepositorio(context);
-                tramite.Nombre = "Modificado";
+                var repositorio = new ArchivoRepositorio(context);
+                archivo.Nombre = "Modificado";
 
                 // Act
-                var resultado = await repositorio.Modificar(tramite);
+                var resultado = await repositorio.Modificar(archivo);
 
                 // Assert
                 Assert.Equal("Modificado", resultado.Nombre);
@@ -166,12 +167,12 @@
         }
 
         [Fact]
-        public async Task Modificar_TramiteNull_LanzaApiException()
+        public async Task Modificar_ArchivoNull_LanzaApiException()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var repositorio = new TramiteRepositorio(context);
+                var repositorio = new ArchivoRepositorio(context);
 
                 // Act & Assert
                 await Assert.ThrowsAsync<ApiException>(() => repositorio.Modificar(null));

@@ -1,8 +1,8 @@
-﻿namespace TramitesAITest.Test.Unitarios
+﻿namespace TramitesAITest.Test.Unitarios.Repositorio
 {
-    using global::TramitesAI.src.Common.Exceptions;
-    using global::TramitesAI.src.Repository.Configuration;
-    using global::TramitesAI.src.Repository.Domain.Entidades;
+    using TramitesAI.src.Common.Exceptions;
+    using TramitesAI.src.Repository.Configuration;
+    using TramitesAI.src.Repository.Domain.Entidades;
     using Microsoft.EntityFrameworkCore;
     using System;
     using System.Collections.Generic;
@@ -99,7 +99,7 @@
                 var solicitudProcesada = new SolicitudProcesada.SolicitudProcesadaBuilder()
                     .Id(3).Canal("123").Email("123").MsgId("123").Solicitud(new Solicitud { MensajeSolicitud = "123" }).
                     Build();
-                solicitudProcesada.Respuesta = new Respuesta { MensajeRespuesta = "123"};
+                solicitudProcesada.Respuesta = new Respuesta { MensajeRespuesta = "123" };
                 context.SolicitudesProcesadas.Add(solicitudProcesada);
                 await context.SaveChangesAsync();
 

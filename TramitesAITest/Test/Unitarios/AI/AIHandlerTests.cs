@@ -9,7 +9,7 @@ using TramitesAI.src.Business.Domain.Dto;
 using TramitesAI.src.Repository.Domain.Entidades;
 using Xunit;
 
-namespace TramitesAITest.Test.Unitarios
+namespace TramitesAITest.Test.Unitarios.AI
 {
     public class AIHandlerTests
     {

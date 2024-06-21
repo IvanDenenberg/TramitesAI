@@ -8,7 +8,7 @@ using TramitesAI.src.AI.Services.Interfaces;
 using TramitesAI.src.Common.Exceptions;
 using Xunit;
 
-namespace TramitesAITest.Test.Unitarios
+namespace TramitesAITest.Test.Unitarios.AI
 {
     public class ServicioTesseractTests
     {

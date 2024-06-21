@@ -9,7 +9,7 @@ using TramitesAI.src.Repositorio.Servicios.Interfaces;
 using TramitesAI.src.Repository.Domain.Entidades;
 using Xunit;
 
-namespace TramitesAITest.Test.Unitarios
+namespace TramitesAITest.Test.Unitarios.Negocio
 {
     public class ServiceNegocioTests
     {
@@ -38,6 +38,36 @@ namespace TramitesAITest.Test.Unitarios
                 _tramiteRepositorioMock.Object,
                 _respuestaRepositorioMock.Object
             );
+        }
+
+        [Fact]
+        public async Task LeerTodasSolicitudesProcesadasAsync_DevuelveListaSolicitudes()
+        {
+            // Arrange
+            var solicitudesProcesadas = new List<SolicitudProcesada>
+                {
+                    new SolicitudProcesada { Id = 1 },
+                    new SolicitudProcesada { Id = 2 }
+                };
+            _solicitudProcesadaRepositorioMock.Setup(repo => repo.LeerTodos()).ReturnsAsync(solicitudesProcesadas);
+
+            // Act
+            var result = await _serviceNegocio.LeerTodasSolicitudesProcesadasAsync();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, ((List<SolicitudProcesada>)result).Count);
+        }
+
+        [Fact]
+        public async Task LeerTodasSolicitudesProcesadasAsync_LanzaApiExceptionErrorInternoServidor()
+        {
+            // Arrange
+            _solicitudProcesadaRepositorioMock.Setup(repo => repo.LeerTodos()).ThrowsAsync(new Exception());
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<ApiException>(() => _serviceNegocio.LeerTodasSolicitudesProcesadasAsync());
+            Assert.Equal(ErrorCode.ERROR_INTERNO_SERVIDOR.ToString(), exception.Codigo);
         }
 
         [Fact]

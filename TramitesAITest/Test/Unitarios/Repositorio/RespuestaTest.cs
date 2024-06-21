@@ -1,24 +1,24 @@
-﻿namespace TramitesAITest.Test.Unitarios
+﻿namespace TramitesAITest.Test.Unitarios.Repositorio
 {
-    using global::TramitesAI.src.Common.Exceptions;
-    using global::TramitesAI.src.Repository.Configuration;
-    using global::TramitesAI.src.Repository.Domain.Entidades;
+    using TramitesAI.src.Common.Exceptions;
+    using TramitesAI.src.Repository.Configuration;
+    using TramitesAI.src.Repository.Domain.Entidades;
+    using TramitesAI.src.Repositorio.Servicios.Implementaciones;
     using Microsoft.EntityFrameworkCore;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using TramitesAI.src.Repositorio.Servicios.Implementaciones;
     using Xunit;
 
-    public class DatoRepositorioTests : IDisposable
+    public class RespuestaRepositorioTests : IDisposable
     {
         private readonly DbContextOptions<ConfigDBContext> _dbContextOptions;
 
-        public DatoRepositorioTests()
+        public RespuestaRepositorioTests()
         {
             _dbContextOptions = new DbContextOptionsBuilder<ConfigDBContext>()
-                .UseInMemoryDatabase(databaseName: "TestDatosDatabase")
+                .UseInMemoryDatabase(databaseName: "TestRespuestasDatabase")
                 .Options;
         }
 
@@ -37,32 +37,32 @@
         }
 
         [Fact]
-        public async Task Borrar_DatoExistente_DevuelveDato()
+        public async Task Borrar_RespuestaExistente_DevuelveRespuesta()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var dato = new Dato { Id = 1, Nombre = "Dato1" };
-                context.Datos.Add(dato);
+                var respuesta = new Respuesta { Id = 1, MensajeRespuesta = "Respuesta1" };
+                context.Respuestas.Add(respuesta);
                 await context.SaveChangesAsync();
 
-                var repositorio = new DatoRepositorio(context);
+                var repositorio = new RespuestaRepositorio(context);
 
                 // Act
                 var resultado = await repositorio.Borrar(1);
 
                 // Assert
-                Assert.Equal(dato, resultado);
+                Assert.Equal(respuesta, resultado);
             }
         }
 
         [Fact]
-        public async Task Borrar_DatoNoExistente_LanzaApiException()
+        public async Task Borrar_RespuestaNoExistente_LanzaApiException()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var repositorio = new DatoRepositorio(context);
+                var repositorio = new RespuestaRepositorio(context);
 
                 // Act & Assert
                 await Assert.ThrowsAsync<ApiException>(() => repositorio.Borrar(999));
@@ -70,50 +70,50 @@
         }
 
         [Fact]
-        public async Task Crear_DatoNuevo_GuardaDato()
+        public async Task Crear_RespuestaNuevo_GuardaRespuesta()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var repositorio = new DatoRepositorio(context);
-                var dato = new Dato { Id = 2, Nombre = "Dato2" };
+                var repositorio = new RespuestaRepositorio(context);
+                var respuesta = new Respuesta { Id = 2, MensajeRespuesta = "Respuesta2" };
 
                 // Act
-                var resultado = await repositorio.Crear(dato);
+                var resultado = await repositorio.Crear(respuesta);
 
                 // Assert
-                Assert.Equal(1, resultado);
-                Assert.Equal(dato, await context.Datos.FindAsync(dato.Id));
+                Assert.Equal(2, resultado);
+                Assert.Equal(respuesta, await context.Respuestas.FindAsync(respuesta.Id));
             }
         }
 
         [Fact]
-        public async Task LeerPorId_DatoExistente_DevuelveDato()
+        public async Task LeerPorId_RespuestaExistente_DevuelveRespuesta()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var dato = new Dato { Id = 3, Nombre = "Dato3" };
-                context.Datos.Add(dato);
+                var respuesta = new Respuesta { Id = 3, MensajeRespuesta = "Respuesta3" };
+                context.Respuestas.Add(respuesta);
                 await context.SaveChangesAsync();
 
-                var repositorio = new DatoRepositorio(context);
+                var repositorio = new RespuestaRepositorio(context);
 
                 // Act
                 var resultado = await repositorio.LeerPorId(3);
 
                 // Assert
-                Assert.Equal(dato, resultado);
+                Assert.Equal(respuesta, resultado);
             }
         }
 
         [Fact]
-        public async Task LeerPorId_DatoNoExistente_LanzaApiException()
+        public async Task LeerPorId_RespuestaNoExistente_LanzaApiException()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var repositorio = new DatoRepositorio(context);
+                var repositorio = new RespuestaRepositorio(context);
 
                 // Act & Assert
                 await Assert.ThrowsAsync<ApiException>(() => repositorio.LeerPorId(999));
@@ -121,17 +121,17 @@
         }
 
         [Fact]
-        public async Task LeerTodos_DevuelveListaDeDatos()
+        public async Task LeerTodos_DevuelveListaDeRespuestas()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var dato1 = new Dato { Id = 4, Nombre = "Dato4" };
-                var dato2 = new Dato { Id = 5, Nombre = "Dato5" };
-                context.Datos.AddRange(dato1, dato2);
+                var respuesta1 = new Respuesta { Id = 4, MensajeRespuesta = "Respuesta4" };
+                var respuesta2 = new Respuesta { Id = 5, MensajeRespuesta = "Respuesta5" };
+                context.Respuestas.AddRange(respuesta1, respuesta2);
                 await context.SaveChangesAsync();
 
-                var repositorio = new DatoRepositorio(context);
+                var repositorio = new RespuestaRepositorio(context);
 
                 // Act
                 var resultado = await repositorio.LeerTodos();
@@ -145,33 +145,33 @@
         }
 
         [Fact]
-        public async Task Modificar_DatoExistente_ActualizaDato()
+        public async Task Modificar_RespuestaExistente_ActualizaRespuesta()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var dato = new Dato { Id = 6, Nombre = "Original" };
-                context.Datos.Add(dato);
+                var respuesta = new Respuesta { Id = 6, MensajeRespuesta = "Original" };
+                context.Respuestas.Add(respuesta);
                 await context.SaveChangesAsync();
 
-                var repositorio = new DatoRepositorio(context);
-                dato.Nombre = "Modificado";
+                var repositorio = new RespuestaRepositorio(context);
+                respuesta.MensajeRespuesta = "Modificado";
 
                 // Act
-                var resultado = await repositorio.Modificar(dato);
+                var resultado = await repositorio.Modificar(respuesta);
 
                 // Assert
-                Assert.Equal("Modificado", resultado.Nombre);
+                Assert.Equal("Modificado", resultado.MensajeRespuesta);
             }
         }
 
         [Fact]
-        public async Task Modificar_DatoNull_LanzaApiException()
+        public async Task Modificar_RespuestaNull_LanzaApiException()
         {
             using (var context = CreateContext())
             {
                 // Arrange
-                var repositorio = new DatoRepositorio(context);
+                var repositorio = new RespuestaRepositorio(context);
 
                 // Act & Assert
                 await Assert.ThrowsAsync<ApiException>(() => repositorio.Modificar(null));
