@@ -130,12 +130,12 @@ namespace TramitesAITest.Test.Funcionales
             var solicitudDto = new SolicitudDTO
             {
                 MsgId = "Id de Mensaje",
-                Channel = "Canal",
-                Email = "Correo electrónico",
-                ReceivedDate = DateTime.Parse("2024-04-26T12:00:00"),
-                Subject = "Cotizar Poliza Auto",
-                Message = "Hola quiero consultar por la póliza para un ford fiesta 2018, mi código postal es 5000",
-                Attachments = new List<string> { "Adjunto1", "Adjunto2", "Adjunto3" }
+                Canal = "Canal",
+                Origen = "Correo electrónico",
+                Recibido = DateTime.Parse("2024-04-26T12:00:00"),
+                Asunto = "Cotizar Poliza Auto",
+                Mensaje = "Hola quiero consultar por la póliza para un ford fiesta 2018, mi código postal es 5000",
+                Adjuntos = new List<string> { "Adjunto1", "Adjunto2", "Adjunto3" }
             };
 
             var jsonContent = new StringContent(JsonConvert.SerializeObject(solicitudDto), Encoding.UTF8, "application/json");
@@ -182,12 +182,12 @@ namespace TramitesAITest.Test.Funcionales
             var solicitudDto = new SolicitudDTO
             {
                 MsgId = "Id de Mensaje",
-                Channel = "Canal",
-                Email = "Correo electrónico",
-                ReceivedDate = DateTime.Parse("2024-04-26T12:00:00"),
-                Subject = "Cotizar Poliza Hogar",
-                Message = "Hola quiero consultar por la póliza para un ford fiesta 2018, mi código postal es 5000",
-                Attachments = new List<string> { "Adjunto1", "Adjunto2", "Adjunto3" }
+                Canal = "Canal",
+                Origen = "Correo electrónico",
+                Recibido = DateTime.Parse("2024-04-26T12:00:00"),
+                Asunto = "Cotizar Poliza Hogar",
+                Mensaje = "Hola quiero consultar por la póliza para un ford fiesta 2018, mi código postal es 5000",
+                Adjuntos = new List<string> { "Adjunto1", "Adjunto2", "Adjunto3" }
             };
 
             var jsonContent = new StringContent(JsonConvert.SerializeObject(solicitudDto), Encoding.UTF8, "application/json");
@@ -232,12 +232,12 @@ namespace TramitesAITest.Test.Funcionales
             var solicitudDto = new SolicitudDTO
             {
                 MsgId = "Id de Mensaje",
-                Channel = "Canal",
-                Email = "Correo electrónico",
-                ReceivedDate = DateTime.Parse("2024-04-26T12:00:00"),
-                Subject = "Telequino vacante",
-                Message = "Hola quiero consultar por la póliza para un ford fiesta 2018, mi código postal es 5000",
-                Attachments = new List<string> { "Adjunto1", "Adjunto2", "Adjunto3" }
+                Canal = "Canal",
+                Origen = "Correo electrónico",
+                Recibido = DateTime.Parse("2024-04-26T12:00:00"),
+                Asunto = "Telequino vacante",
+                Mensaje = "Hola quiero consultar por la póliza para un ford fiesta 2018, mi código postal es 5000",
+                Adjuntos = new List<string> { "Adjunto1", "Adjunto2", "Adjunto3" }
             };
 
             var jsonContent = new StringContent(JsonConvert.SerializeObject(solicitudDto), Encoding.UTF8, "application/json");

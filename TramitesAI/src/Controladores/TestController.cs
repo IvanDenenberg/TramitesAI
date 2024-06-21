@@ -5,8 +5,8 @@ using TramitesAI.src.AI.Domain.Dto;
 using TramitesAI.src.AI.Services.Interfaces;
 using TramitesAI.src.Business.Domain.Dto;
 using TramitesAI.src.Business.Services.Interfaces;
+using TramitesAI.src.Repositorio.Servicios.Interfaces;
 using TramitesAI.src.Repository.Domain.Entidades;
-using TramitesAI.src.Repository.Interfaces;
 
 namespace TramitesAI.src.Controllers
 {

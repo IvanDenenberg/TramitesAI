@@ -31,7 +31,7 @@ namespace TramitesAITest.Test.Unitarios
         {
             // Arrange
             var textoArchivos = new List<InformacionExtraidaDTO> { new InformacionExtraidaDTO { Texto = "Texto de prueba", Confianza = 0.9f } };
-            var solicitud = new SolicitudDTO { Message = "Mensaje de prueba" };
+            var solicitud = new SolicitudDTO { Mensaje = "Mensaje de prueba" };
             var tramite = new Tramite { Nombre = "Denuncia Siniestro" };
             var expectedResponse = new { resultados = new List<InformacionAnalizadaDTO> { new InformacionAnalizadaDTO { Texto = "Resultado" } } };
 
@@ -55,7 +55,7 @@ namespace TramitesAITest.Test.Unitarios
         {
             // Arrange
             var textoArchivos = new List<InformacionExtraidaDTO> { new InformacionExtraidaDTO { Texto = "Texto de prueba", Confianza = 0.9f } };
-            var solicitud = new SolicitudDTO { Message = "Mensaje de prueba" };
+            var solicitud = new SolicitudDTO { Mensaje = "Mensaje de prueba" };
             var tramite = new Tramite { Nombre = "Denuncia Siniestro" };
 
             _mockHttpClientWrapper.Setup(x => x.PostAsync(It.IsAny<string>(), It.IsAny<object>()))
@@ -74,7 +74,7 @@ namespace TramitesAITest.Test.Unitarios
         {
             // Arrange
             var textoArchivos = new List<InformacionExtraidaDTO> { new InformacionExtraidaDTO { Texto = "Texto de prueba", Confianza = 0.9f } };
-            var solicitud = new SolicitudDTO { Message = "Mensaje de prueba" };
+            var solicitud = new SolicitudDTO { Mensaje = "Mensaje de prueba" };
             var tramite = new Tramite { Nombre = "Denuncia Siniestro" };
 
             _mockHttpClientWrapper.Setup(x => x.PostAsync(It.IsAny<string>(), It.IsAny<object>()))

@@ -1,4 +1,4 @@
-﻿namespace TramitesAI.src.Business.Domain.Dto
+﻿namespace TramitesAI.src.Controladores.Dominio.Dto
 {
     public class RespuestaErrorDTO
     {

@@ -35,7 +35,7 @@
         [DetallesError("Asunto de mail invalido", 400)]
         ASUNTO_INVALIDO = 6,
 
-        [DetallesError("Non encontrado", 404)]
+        [DetallesError("No encontrado", 404)]
         NO_ENCONTRADO = 7,
 
         [DetallesError("Archivo no encontrado", 404)]
@@ -57,4 +57,3 @@
         ERROR_AL_BORRAR = 13,
     }
 }
-

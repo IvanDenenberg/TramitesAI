@@ -3,6 +3,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using TramitesAI.src.Business.Domain.Dto;
 using TramitesAI.src.Business.Services.Interfaces;
 using TramitesAI.src.Common.Exceptions;
+using TramitesAI.src.Controladores.Dominio.Dto;
 using TramitesAI.src.Repository.Domain.Entidades;
 
 namespace TramitesAI.src.Controllers

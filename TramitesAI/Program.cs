@@ -13,10 +13,10 @@ using TramitesAI.src.Business.Services.Interfaces;
 using TramitesAI.src.Common.Exceptions;
 using TramitesAI.src.Comun.Servicios.Implementaciones;
 using TramitesAI.src.Comun.Servicios.Interfaces;
+using TramitesAI.src.Repositorio.Servicios.Implementaciones;
+using TramitesAI.src.Repositorio.Servicios.Interfaces;
 using TramitesAI.src.Repository.Configuration;
 using TramitesAI.src.Repository.Domain.Entidades;
-using TramitesAI.src.Repository.Implementations;
-using TramitesAI.src.Repository.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

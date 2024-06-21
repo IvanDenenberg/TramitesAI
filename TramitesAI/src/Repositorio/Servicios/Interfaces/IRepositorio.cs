@@ -1,4 +1,4 @@
-﻿namespace TramitesAI.src.Repository.Interfaces
+﻿namespace TramitesAI.src.Repositorio.Servicios.Interfaces
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;

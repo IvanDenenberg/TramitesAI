@@ -42,7 +42,7 @@ namespace TramitesAI.src.AI.Services.Implementation
                         pythonEndpoint = "/poliza_auto";
                         contenido = new
                         {
-                            textos = new List<string> { solicitud.Message }
+                            textos = new List<string> { solicitud.Mensaje }
                         };
                         break;
                     case "Carga Presupuestos":
@@ -56,7 +56,7 @@ namespace TramitesAI.src.AI.Services.Implementation
                         pythonEndpoint = "/poliza_hogar";
                         contenido = new
                         {
-                            textos = new List<string> { solicitud.Message }
+                            textos = new List<string> { solicitud.Mensaje }
                         };
                         break;
                     default:

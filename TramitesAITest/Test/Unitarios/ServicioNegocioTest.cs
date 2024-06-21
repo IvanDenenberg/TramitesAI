@@ -5,8 +5,8 @@ using TramitesAI.src.Business.Domain.Dto;
 using TramitesAI.src.Business.Services.Implementation;
 using TramitesAI.src.Business.Services.Interfaces;
 using TramitesAI.src.Common.Exceptions;
+using TramitesAI.src.Repositorio.Servicios.Interfaces;
 using TramitesAI.src.Repository.Domain.Entidades;
-using TramitesAI.src.Repository.Interfaces;
 using Xunit;
 
 namespace TramitesAITest.Test.Unitarios
@@ -72,12 +72,12 @@ namespace TramitesAITest.Test.Unitarios
             // Arrange
             var solicitudDTO = new SolicitudDTO
             {
-                Subject = "test",
-                Attachments = new List<string> { "file1", "file2" },
+                Asunto = "test",
+                Adjuntos = new List<string> { "file1", "file2" },
                 MsgId = "msg123",
-                Channel = "email",
-                Email = "test@example.com",
-                ReceivedDate = DateTime.Now
+                Canal = "email",
+                Origen = "test@example.com",
+                Recibido = DateTime.Now
             };
 
             var solicitud = new Solicitud { Id = 1 };
@@ -113,7 +113,7 @@ namespace TramitesAITest.Test.Unitarios
         public async Task ProcesarAsync_IdInvalido_DeberiaLanzarApiException()
         {
             // Arrange
-            var solicitudDTO = new SolicitudDTO { Subject = "test" };
+            var solicitudDTO = new SolicitudDTO { Asunto = "test" };
             _solicitudRepositorioMock.Setup(repo => repo.Crear(It.IsAny<Solicitud>())).ReturnsAsync(1); // Simulamos un id válido
             _tramiteRepositorioMock.Setup(repo => repo.LeerPorId(It.IsAny<int>())).ReturnsAsync(new Tramite()); // Simulamos un tramite existente
 
@@ -125,7 +125,7 @@ namespace TramitesAITest.Test.Unitarios
         public async Task ProcesarAsync_TramiteInvalido_DeberiaLanzarApiException()
         {
             // Arrange
-            var solicitudDTO = new SolicitudDTO { Subject = "test" };
+            var solicitudDTO = new SolicitudDTO { Asunto = "test" };
             _solicitudRepositorioMock.Setup(repo => repo.Crear(It.IsAny<Solicitud>())).ReturnsAsync(1); // Simulamos un id válido
             _tramiteRepositorioMock.Setup(repo => repo.LeerPorId(It.IsAny<int>())).ThrowsAsync(new ApiException(ErrorCode.NO_ENCONTRADO)); // Simulamos un tramite no encontrado
 
@@ -142,7 +142,7 @@ namespace TramitesAITest.Test.Unitarios
         public async Task ProcesarAsync_ArchivosInvalidos_DeberiaLanzarApiException()
         {
             // Arrange
-            var solicitudDTO = new SolicitudDTO { Subject = "test", Attachments = new List<string> { "file1" }, MsgId = "msg123" };
+            var solicitudDTO = new SolicitudDTO { Asunto = "test", Adjuntos = new List<string> { "file1" }, MsgId = "msg123" };
             _solicitudRepositorioMock.Setup(repo => repo.Crear(It.IsAny<Solicitud>())).ReturnsAsync(1); // Simulamos un id válido
             _tramiteRepositorioMock.Setup(repo => repo.LeerPorId(It.IsAny<int>())).ReturnsAsync(new Tramite { TramiteArchivos = new List<TramiteArchivo>() }); // Simulamos un tramite con archivos
             _fileSearcherMock.Setup(fs => fs.ObtenerArchivo(It.IsAny<string>(), It.IsAny<string>())).Throws(new ApiException(ErrorCode.NO_ENCONTRADO)); // Simulamos una excepción al obtener archivos
@@ -155,7 +155,7 @@ namespace TramitesAITest.Test.Unitarios
         public async Task ProcesarAsync_ErrorInterno_DeberiaLanzarApiException()
         {
             // Arrange
-            var solicitudDTO = new SolicitudDTO { Subject = "test" };
+            var solicitudDTO = new SolicitudDTO { Asunto = "test" };
             _solicitudRepositorioMock.Setup(repo => repo.Crear(It.IsAny<Solicitud>())).ThrowsAsync(new Exception()); // Simulamos un error interno en la creación de solicitud
 
             // Act & Assert

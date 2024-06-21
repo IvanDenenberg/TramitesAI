@@ -5,8 +5,8 @@ using TramitesAI.src.AI.Services.Interfaces;
 using TramitesAI.src.Business.Domain.Dto;
 using TramitesAI.src.Business.Services.Interfaces;
 using TramitesAI.src.Common.Exceptions;
+using TramitesAI.src.Repositorio.Servicios.Interfaces;
 using TramitesAI.src.Repository.Domain.Entidades;
-using TramitesAI.src.Repository.Interfaces;
 
 namespace TramitesAI.src.Business.Services.Implementation
 {
@@ -60,8 +60,8 @@ namespace TramitesAI.src.Business.Services.Implementation
                 Solicitud solicitud = await GuardarSolicitud(solicitudDTO);
                 
                 // Determinar el tipo de la solicitud
-                Tramite tramite = await DeterminarTramite(solicitudDTO.Subject);
-                Console.WriteLine("Tramite asociado");
+                Tramite tramite = await DeterminarTramite(solicitudDTO.Asunto);
+                Console.WriteLine("Tramite asociado " + tramite.Nombre);
 
                 // Extraer la informacion, generar la SolicitudProcesada y guardarla en la DB
                 int idSolicitudProcesada = await GuardarSolicitudProcesada(solicitudDTO, tramite.Id, solicitud);
@@ -72,7 +72,7 @@ namespace TramitesAI.src.Business.Services.Implementation
                 if (tramite.TramiteArchivos != null & tramite.TramiteArchivos.Count() > 0)
                 {
                     // Obtener los archivos desde un almacenamiento externo
-                    archivos = ObtenerArchivos(solicitudDTO.Attachments, solicitudDTO.MsgId);
+                    archivos = ObtenerArchivos(solicitudDTO.Adjuntos, solicitudDTO.MsgId);
                     Console.WriteLine("Archivos descargados");
                 }
 
@@ -257,9 +257,9 @@ namespace TramitesAI.src.Business.Services.Implementation
         {
             SolicitudProcesada solicitudProcesada = SolicitudProcesada.Builder()
                     .MsgId(solicitudDTO.MsgId)
-                    .Canal(solicitudDTO.Channel)
-                    .Email(solicitudDTO.Email)
-                    .Creado(solicitudDTO.ReceivedDate)
+                    .Canal(solicitudDTO.Canal)
+                    .Email(solicitudDTO.Origen)
+                    .Creado(solicitudDTO.Recibido)
                     .TipoTramite(tipo)
                     .Solicitud(await _solicitudRepositorio.LeerPorId(solicitud.Id))
                     .Build();

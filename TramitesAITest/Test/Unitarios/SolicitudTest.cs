@@ -3,12 +3,12 @@
     using global::TramitesAI.src.Common.Exceptions;
     using global::TramitesAI.src.Repository.Configuration;
     using global::TramitesAI.src.Repository.Domain.Entidades;
-    using global::TramitesAI.src.Repository.Implementations;
     using Microsoft.EntityFrameworkCore;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using TramitesAI.src.Repositorio.Servicios.Implementaciones;
     using Xunit;
 
     public class SolicitudRepositorioTests : IDisposable

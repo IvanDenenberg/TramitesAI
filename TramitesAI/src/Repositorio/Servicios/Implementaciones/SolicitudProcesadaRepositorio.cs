@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using TramitesAI.src.Common.Exceptions;
+using TramitesAI.src.Repositorio.Servicios.Interfaces;
 using TramitesAI.src.Repository.Configuration;
 using TramitesAI.src.Repository.Domain.Entidades;
-using TramitesAI.src.Repository.Interfaces;
 
-namespace TramitesAI.src.Repository.Implementations
+namespace TramitesAI.src.Repositorio.Servicios.Implementaciones
 {
     public class SolicitudProcesadaRepositorio : IRepositorio<SolicitudProcesada>
     {

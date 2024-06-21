@@ -3,7 +3,7 @@
     using global::TramitesAI.src.Common.Exceptions;
     using global::TramitesAI.src.Repository.Configuration;
     using global::TramitesAI.src.Repository.Domain.Entidades;
-    using global::TramitesAI.src.Repository.Implementations;
+    using TramitesAI.src.Repositorio.Servicios.Implementaciones;
     using Microsoft.EntityFrameworkCore;
     using System;
     using System.Collections.Generic;
