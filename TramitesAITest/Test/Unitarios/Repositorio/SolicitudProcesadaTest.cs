@@ -113,18 +113,18 @@
             }
         }
 
-        [Fact]
-        public async Task LeerPorId_SolicitudProcesadaNoExistente_LanzaApiException()
-        {
-            using (var context = CreateContext())
+            [Fact]
+            public async Task LeerPorId_SolicitudProcesadaNoExistente_LanzaApiException()
             {
-                // Arrange
-                var repositorio = new SolicitudProcesadaRepositorio(context);
+                using (var context = CreateContext())
+                {
+                    // Arrange
+                    var repositorio = new SolicitudProcesadaRepositorio(context);
 
-                // Act & Assert
-                await Assert.ThrowsAsync<ApiException>(() => repositorio.LeerPorId(999));
+                    // Act & Assert
+                    await Assert.ThrowsAsync<ApiException>(() => repositorio.LeerPorId(999));
+                }
             }
-        }
 
         [Fact]
         public async Task LeerTodos_DevuelveListaDeSolicitudProcesadaes()

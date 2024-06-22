@@ -224,7 +224,7 @@ namespace TramitesAITest.Test.Funcionales
         }
 
         [Fact]
-        public async Task ProcesarAsync_Devuelve_ApiException_TramiteInvalido()
+        public async Task ProcesarAsync_Devuelve_Ok_TramiteInvalido()
         {
             // Arrange
             var url = "/api/procesar";
